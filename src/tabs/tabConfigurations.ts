@@ -6,7 +6,6 @@ import { createConfigurationContent } from '../content/configuration.js';
 import { createRunDynamicsContent } from '../content/runDynamics.js';
 import { createCommandScriptsContent } from '../content/commandScripts.js';
 import { createGraphicsContent } from '../content/graphics.js';
-import { buildSubstanceButton  } from '../content/buildSubstance.js';
 
 export const topMenuTabs: Tab[] = [
     {

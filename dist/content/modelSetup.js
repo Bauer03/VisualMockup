@@ -1,3 +1,4 @@
+import { createPotentialParameters } from './potentialParameters.js';
 export const createModelSetupContent = () => {
     const content = document.createElement('div');
     content.className = 'flex flex-col gap-8 px-3';
@@ -31,20 +32,20 @@ export const createModelSetupContent = () => {
             </fieldset>
 
             <fieldset class="flex flex-col gap-2">
-                <label for="Potential Model" class="text-gray-700 dark:text-gray-300">Potential Model</label>
-                <select id="Potential Model" class="w-full rounded shadow-sm
+                <label for="PotentialModel" class="text-gray-700 dark:text-gray-300">Potential Model</label>
+                <select id="PotentialModel" class="w-full rounded shadow-sm
                     bg-white dark:bg-gray-800 
                     text-gray-900 dark:text-gray-100
                     border border-gray-200 dark:border-gray-700">
-                    <option value="1">No Potential</option>
-                    <option value="2">Lennard-Jones</option>
-                    <option value="3">Buckingham</option>
+                    <option value="NoPotential">No Potential</option>
+                    <option value="LennardJones">LennardJones</option>
+                    <option value="SoftSphere">Soft Sphere</option>
                 </select>
             </fieldset>
         </div>
 
-        <div class="flex gap-4 items-center">
-            <div class="grid gap-2 w-2/5">
+        <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
+            <div class="grid gap-2 ps-0 px-4 py-2">
                 <div class="flex gap-2 justify-between">
                     <label for="Number of atoms" class="flex text-gray-700 dark:text-gray-300">
                         Num. of atoms
@@ -58,6 +59,7 @@ export const createModelSetupContent = () => {
                             focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
                             focus:border-transparent">
                 </div>
+
                 <div class="flex gap-2 justify-between">
                     <label for="Atomic Mass" class="flex text-gray-700 dark:text-gray-300">
                         Atomic Mass
@@ -74,6 +76,19 @@ export const createModelSetupContent = () => {
             </div>
         </div>
     `;
+    let pModelDropdown = formContent.querySelector("#PotentialModel");
+    pModelDropdown.onchange = (event) => {
+        const potentialModel = event.target.value;
+        if (document.getElementById('model-setup-inputs').children.length > 1) {
+            document.getElementById('model-setup-inputs')?.children[1].remove();
+        }
+        if (potentialModel === 'SoftSphere' || potentialModel === 'LennardJones') {
+            if (formContent.querySelector("#potential-parameters")) {
+                formContent.querySelector("#potential-parameters")?.remove();
+            }
+            document.getElementById('model-setup-inputs')?.appendChild(createPotentialParameters());
+        }
+    };
     content.appendChild(formContent);
     return content;
 };

@@ -4,7 +4,7 @@
   "main": "tailwind.config.js",
   "scripts": {
     "build:css": "tailwindcss -i twsrc/styles.css -o twout/styles.css --watch",
-    "build:ts": "tsc --watch",
+    "build:ts": "tsc -w",
     "dev": "concurrently \"npm run build:css\" \"npm run build:ts\""
   },
   "keywords": [],
