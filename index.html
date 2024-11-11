@@ -4,23 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Substance [Mockup]</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="./twout/styles.css" rel="stylesheet">
 </head>
-<body class="flex justify-center items-center h-screen w-screen bg-gray-100">
-    <div class="grid bg-white p-4 rounded text-slate-800 gap-4 shadow grid-cols-2 w-fit"> <!-- note height is defined here... may break stuff at some point? -->
-        <div class="grid gap-4 w-fit"> <!-- This is the left side our our simulation menu.-->
-            <div class="bg-slate-100 p-4 rounded shadow grid gap-4 content-start"> <!-- menu section top. contains model setup, run dynamics, command script, and graphics tabs.-->
-                <div class="flex justify-start items-start content-start gap-2"> <!--these are the menu tabs specified in the above line.-->
-                    <button class="p-1">Model Setup</button>
-                    <button class="p-1">Run Dynamics</button>
-                    <button class="p-1">Command Scripts</button>
-                    <button class="p-1">Graphics</button>
+<body class="flex flex-col justify-center items-center h-screen w-screen bg-gray-100 font-mono">
+    <div class="flex bg-white p-4 rounded text-slate-800 gap-4 shadow-lg relative before:content-['Virtual_Substance'] before:text-3xl before:font-bold before:font-mono before:absolute before:-top-12 before:left-0 before:w-full"> <!-- note height is defined here... may break stuff at some point? -->
+        <button class="material-icons absolute shadow-md -top-14 right-0 text-3xl bg-white rounded text-slate-500 hover:text-slate-800 transition-colors duration-200 h-10 w-10 flex items-center justify-center" onclick="toggleDarkMode()">dark_mode</button>
+        <div class="grid gap-4"> <!-- This is the left side our our simulation menu.-->
+            <div class="bg-slate-100 p-4 rounded shadow grid gap-6 content-start"> <!-- menu section top. contains model setup, run dynamics, command script, and graphics tabs.-->
+                <div class="flex justify-start items-start content-start menu-tab gap-1">
+                    <button class="px-4 py-2 tab-selected">Model Setup</button>
+                    <button class="px-4 py-2">Run Dynamics</button>
+                    <button class="px-4 py-2">Command Scripts</button>
+                    <button class="px-4 py-2">Graphics</button>
                 </div>
-                <div class="flex flex-col gap-4"> <!--this will change based on the selected tab. By default, Model Setup is selected.--> 
-                    <div class="flex gap-4"> <!--These are the actual options which the user will toggle. -->
-                        <fieldset>
+                <div class="flex flex-col gap-8 px-3"> <!--this will change based on the selected tab. By default, Model Setup is selected.--> 
+                    <div class="flex justify-between"> <!--These are the actual options which the user will toggle. -->
+                        <fieldset class="flex flex-col gap-2">
                             <label for="Atom Type">Atom Type</label>
-                            <select id="Atom Type" class="p-1 w-full">
+                            <select id="Atom Type" class="w-full rounded shadow-sm">
                                 <option value="1">Ar</option>
                                 <option value="2">Mg</option>
                                 <option value="3">Li</option>
@@ -29,64 +31,75 @@
                             </select>
                         </fieldset>
 
-                        <fieldset>
+                        <fieldset class="flex flex-col gap-2">
                             <label for="Boundary">Boundary</label>
-                            <select id="Boundary" class="p-1 w-full">
+                            <select id="Boundary" class="w-full rounded shadow-sm">
                                 <option value="1">Fixed Walls</option>
                                 <option value="2">Fuzzy Walls</option>
                             </select>
                         </fieldset>
 
-                        <fieldset>
+                        <fieldset class="flex flex-col gap-2">
                             <label for="Potential Model">Potential Model</label>
-                            <select id="Potential Model" class="p-1 w-full">
+                            <select id="Potential Model" class="w-full rounded shadow-sm">
                                 <option value="1">No Potential</option>
                                 <option value="2">Lennard-Jones</option>
                                 <option value="3">Buckingham</option>
                             </select>
                         </fieldset>
                     </div>
-                    <div class="flex gap-4"> <!-- These are two fields in which the user can input values. -->
-                        <label for="Number of atoms">Num. of atoms</label>
-                        <input type="number" id="Number of atoms" class="p-1">
-
-                        <label for="Atomic Mass">Atomic Mass</label>
-                        <input type="number" id="Atomic Mass" class="p-1">
+                    <div class="flex gap-4 items-center justify-between content-center"> <!-- These are two fields in which the user can input values. -->
+                        <div class="grid gap-2 w-2/5">
+                            <div class="flex gap-2 justify-between">
+                                <label for="Number of atoms" class="flex">Num. of atoms</label>
+                                <input type="number" id="Number of atoms" class="p-1 rounded w-20 shadow-sm">
+                            </div>
+                            <div class="flex gap-2 justify-between">
+                                <label for="Atomic Mass" class="flex">Atomic Mass</label>
+                                <input type="number" id="Atomic Mass" class="p-1 rounded w-20 shadow-sm">
+                            </div>
+                        </div>
+                        <button class="px-4 py-2 shadow rounded self-end uppercase bg-blue-200 hover:bg-blue-300 transition-colors duration-200">Build Substance</button>    
                     </div>
-                    <button class="p-1 shadow bg-blue-100">Build Substance</button> <!-- not sure whether this should be in a div? -->
                 </div>
             </div>
-            <div class="bg-slate-100 p-4 rounded shadow grid"> <!-- menu section bottom. contains output settings, notebook, and configuration tabs.-->
-                <!-- This section also holds tabs. These are output, notebook, and configuration.-->
-                <div class="flex justify-start content-start items-start gap-2"> <!--these are the menu tabs specified in the above line.-->
-                    <button class="p-1">Output</button>
-                    <button class="p-1">Notebook</button>
-                    <button class="p-1">Configuration</button>
+            <div class="bg-slate-100 p-4 rounded shadow grid gap-6"> <!-- menu section bottom. contains output settings, notebook, and configuration tabs.-->
+                <div class="flex justify-start content-start items-start gap-1 menu-tab">
+                    <button class="px-4 py-2 tab-selected">Output</button>
+                    <button class="px-4 py-2">Notebook</button>
+                    <button class="px-4 py-2">Configuration</button>
                 </div>
-                <div class="grid gap-4"> <!-- splits the output into two. top for time output, bottom for others (temp, pressure, volume, etc).-->
-                    <div class="grid gap-4"> <!-- Top section of output tab. No user inputs here - just displays the output. -->
-                        <div class="flex gap-4">
-                            <span>Time (ps)</span>
-                            <span>Total Time (ps)</span>
+                <div class="grid px-3"> <!-- splits the output into two. top for time output, bottom for others (temp, pressure, volume, etc).-->
+                    <div class="flex gap-12"> <!-- Top section of output tab. No user inputs here - just displays the output. -->
+                        <div class="grid gap-2">
+                            <div class="flex gap-4 justify-between">
+                                <span>Time (ps)</span><span>20</span>
+                            </div>
+                            <div class="flex gap-4 justify-between">
+                                <span>Total Time (ps)</span><span>20</span>
+                            </div>
                         </div>
-                        <div class="flex gap-4">
-                            <span>Run Time </span>
-                            <span>Total Time</span>
+                        <div class="grid gap-2">
+                            <div class="flex gap-4 justify-between">
+                                <span>Run Time </span><span>20</span>
+                            </div>
+                            <div class="flex gap-4 justify-between">
+                                <span>Total Time</span><span>20</span>
+                            </div>
                         </div>
                     </div>
                     <div class="flex gap-4"> <!-- Bottom section. Again, no user inputs here. -->
-
+                        
                     </div>
                 </div>    
             </div>
         </div>
-        <div class="grid gap-4 w-min">
-            <div class="flex p-4 rounded shadow overflow-hidden w-min">
-                <!-- never used threejs but i'm just adding a canvas for now to represent the simulation.-->
-                <canvas id="canvas" width="400" height="400"></canvas>
+        <div class="grid gap-4 w-[400px]">
+            <div class="bg-white rounded shadow">
+                <canvas id="canvas" class="w-full h-full bg-slate-700 rounded shadow" width="400" height="400"></canvas>
             </div>
-            <div class="flex bg-slate-100 p-4 rounded shadow">
-                Bottom right box. Not sure what to put here, if anything. May ask McNeil.
+            <div class="bg-slate-100 rounded p-4 shadow">
+                aaaa
             </div>
         </div>
     </div>

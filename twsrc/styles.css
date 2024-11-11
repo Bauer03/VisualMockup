@@ -1,3 +1,84 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --select-bg: #ffffff;
+    --input-bg: #ffffff;
+  }
+
+  :root[data-theme='dark'] {
+    --select-bg: #1e293b;
+    --input-bg: #1e293b;
+  }
+}
+
+@layer components {
+  .menu-tab button {
+    @apply border border-white rounded-md px-4 py-2 transition-colors; 
+  }
+
+  .menu-tab button.tab-selected {
+    @apply bg-slate-200;
+  }
+
+  select {
+    @apply appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat;
+    @apply bg-[length:0.65em] bg-[right_0.75rem_center];
+    @apply py-2 pl-2 pr-8;
+    @apply bg-[var(--select-bg)];
+  }
+}
+
+/* Dark theme styles */
+[data-theme='dark'] .bg-white {
+  background-color: #0f172a;  /* slate-900 */
+}
+
+[data-theme='dark'] .bg-gray-100 {
+  background-color: #161e2e;  /* slate-900 */
+}
+
+[data-theme='dark'] .bg-slate-100 {
+  background-color: #1e293b;  /* slate-800 */
+}
+
+[data-theme='dark'] .text-slate-800 {
+  color: #f1f5f9;  /* slate-100 */
+}
+
+[data-theme='dark'] .text-slate-500 {
+  color: #94a3b8;  /* slate-400 */
+}
+
+[data-theme='dark'] .hover\:text-slate-800:hover {
+  color: #e2e8f0;  /* slate-200 */
+}
+
+[data-theme='dark'] .menu-tab button {
+  border-color: #334155;  /* slate-700 */
+}
+
+[data-theme='dark'] .menu-tab button.tab-selected {
+  background-color: #334155;  /* slate-700 */
+}
+
+[data-theme='dark'] .bg-blue-200 {
+  background-color: #1e40af;  /* blue-800 */
+}
+
+[data-theme='dark'] .hover\:bg-blue-300:hover {
+  background-color: #1d4ed8;  /* blue-700 */
+}
+
+[data-theme='dark'] select,
+[data-theme='dark'] input[type="number"] {
+  color: #f1f5f9;  /* slate-100 */
+  border-color: #334155;  /* slate-700 */
+  background-color: #161e2e;  /* slate-900 */
+}
+
+[data-theme='dark'] canvas.bg-slate-700 {
+  background-color: #1e293b;  /* slate-800 */
+}
