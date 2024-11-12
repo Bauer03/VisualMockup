@@ -54,8 +54,3 @@ export const bottomMenuTabs: Tab[] = [
         materialIcon: "tune"
     }
 ];
-
-function saveData(data: string) {
-    return;
-    // use indexedDB to save data locally.
-}

@@ -1,1 +1,0 @@
-{"version":3,"file":"runDynamics.js","sourceRoot":"","sources":["../../src/content/runDynamics.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,MAAM,wBAAwB,GAAG,GAAgB,EAAE;IACtD,MAAM,OAAO,GAAG,QAAQ,CAAC,aAAa,CAAC,KAAK,CAAC,CAAC;IAC9C,OAAO,CAAC,SAAS,GAAG,WAAW,CAAC;IAChC,OAAO,CAAC,SAAS,GAAG,mCAAmC,CAAC;IACxD,OAAO,OAAO,CAAC;AACnB,CAAC,CAAC"}
