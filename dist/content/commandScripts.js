@@ -1,7 +1,7 @@
 export const createCommandScriptsContent = () => {
     const content = document.createElement('div');
     content.className = 'grid px-3';
-    content.innerHTML = '<span>Command Scripts Content</span>';
+    content.innerHTML = '<span>Scripts Content</span>';
     return content;
 };
 //# sourceMappingURL=commandScripts.js.map

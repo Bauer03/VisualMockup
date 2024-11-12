@@ -1,5 +1,5 @@
 import { buildSubstanceButton } from './content/buildSubstance.js';
-import { TabSystem } from './tabSystem.js';
+import { TabSystem } from './tabs/tabSystem.js';
 import { topMenuTabs, bottomMenuTabs } from './tabs/tabConfigurations.js';
 import { setupThemeToggle } from './theme/themeToggle.js';
 

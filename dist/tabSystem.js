@@ -12,30 +12,32 @@ export class TabSystem {
         this.initialize();
     }
     initialize() {
-        // Create tab button container
         const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'flex justify-start items-start content-start menu-tab gap-1';
-        // Create tab buttons
+        buttonContainer.className = 'flex justify-start items-center content-start menu-tab gap-1';
         this.tabs.forEach(tab => {
             const button = document.createElement('button');
-            button.className = 'px-4 py-2';
+            button.className = 'px-4 py-2 flex items-center gap-2';
             button.textContent = tab.label;
             button.onclick = () => this.switchTab(tab.id);
+            if (tab.materialIcon) {
+                const icon = document.createElement('span');
+                icon.className = `material-icons text-sm`;
+                icon.textContent = tab.materialIcon;
+                button.appendChild(icon);
+            }
             this.tabButtons.set(tab.id, button);
             buttonContainer.appendChild(button);
         });
-        // Clear existing content and append new elements
         this.container.innerHTML = '';
         this.container.appendChild(buttonContainer);
         this.container.appendChild(this.contentContainer);
-        // Show initial tab
+        // show initial tab
         this.switchTab(this.activeTabId);
     }
     switchTab(tabId) {
         this.activeTabId = tabId;
-        // Update button styles
         this.tabButtons.forEach((button, id) => {
-            button.className = 'px-4 py-2' + (id === tabId ? ' tab-selected' : '');
+            button.className = 'px-4 py-2 flex items-center gap-2' + (id === tabId ? ' tab-selected' : '');
         });
         // Update content
         const tab = this.tabs.find(t => t.id === tabId);

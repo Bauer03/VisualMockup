@@ -9,39 +9,50 @@ export const topMenuTabs = [
     {
         id: 'model-setup',
         label: 'Model Setup',
-        content: createModelSetupContent()
+        content: createModelSetupContent(),
+        materialIcon: "settings"
     },
     {
         id: 'run-dynamics',
         label: 'Run Dynamics',
-        content: createRunDynamicsContent()
+        content: createRunDynamicsContent(),
+        materialIcon: "play_arrow"
     },
     {
         id: 'command-scripts',
-        label: 'Command Scripts',
-        content: createCommandScriptsContent()
+        label: 'Scripts',
+        content: createCommandScriptsContent(),
+        materialIcon: "code"
     },
     {
         id: 'graphics',
         label: 'Graphics',
-        content: createGraphicsContent()
+        content: createGraphicsContent(),
+        materialIcon: "image"
     }
 ];
 export const bottomMenuTabs = [
     {
         id: 'output',
         label: 'Output',
-        content: createOutputContent()
+        content: createOutputContent(),
+        materialIcon: "output"
     },
     {
         id: 'notebook',
         label: 'Notebook',
-        content: createNotebookContent()
+        content: createNotebookContent(),
+        materialIcon: "edit_note"
     },
     {
         id: 'configuration',
         label: 'Configuration',
-        content: createConfigurationContent()
+        content: createConfigurationContent(),
+        materialIcon: "tune"
     }
 ];
+function saveData(data) {
+    return;
+    // use indexedDB to save data locally.
+}
 //# sourceMappingURL=tabConfigurations.js.map

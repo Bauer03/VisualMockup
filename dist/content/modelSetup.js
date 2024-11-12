@@ -1,22 +1,24 @@
 import { createPotentialParameters } from './potentialParameters.js';
 export const createModelSetupContent = () => {
     const content = document.createElement('div');
-    content.className = 'flex flex-col gap-8 px-3';
+    content.className = 'flex flex-col px-3';
     // Create the form content
     const formContent = document.createElement('div');
-    formContent.className = 'flex flex-col gap-8';
+    formContent.className = 'flex flex-col gap-4';
     formContent.innerHTML = `
         <div class="flex justify-between">
             <fieldset class="flex flex-col gap-2">
-                <label for="Atom Type" class="text-gray-700 dark:text-gray-300">Atom Type</label>
-                <select id="Atom Type" class="w-full rounded shadow-sm 
+                <label for="AtomType" class="text-gray-700 dark:text-gray-300">Atom Type</label>
+                <select id="AtomType" class="w-full rounded shadow-sm 
                     bg-white dark:bg-gray-800 
                     text-gray-900 dark:text-gray-100
                     border border-gray-200 dark:border-gray-700">
-                    <option value="1">Ar</option>
-                    <option value="2">Mg</option>
-                    <option value="3">Li</option>
-                    <option value="4">Ca</option>
+                    <option value="He">He</option>
+                    <option value="Ne">Ne</option>
+                    <option value="Ar">Ar</option>
+                    <option value="Kr">Kr</option>
+                    <option value="Xe">Xe</option>
+                    <option value="User">User</option>
                 </select>
             </fieldset>
 
@@ -26,8 +28,8 @@ export const createModelSetupContent = () => {
                     bg-white dark:bg-gray-800 
                     text-gray-900 dark:text-gray-100
                     border border-gray-200 dark:border-gray-700">
-                    <option value="1">Fixed Walls</option>
-                    <option value="2">Fuzzy Walls</option>
+                    <option value="FixedWalls">Fixed Walls</option>
+                    <option value="Periodic">Periodic</option>
                 </select>
             </fieldset>
 
@@ -47,11 +49,11 @@ export const createModelSetupContent = () => {
         <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
             <div class="grid gap-2 ps-0 px-4 py-2">
                 <div class="flex gap-2 justify-between">
-                    <label for="Number of atoms" class="flex text-gray-700 dark:text-gray-300">
+                    <label for="AtomCount" class="flex text-gray-700 dark:text-gray-300">
                         Num. of atoms
                     </label>
                     <input type="number" 
-                        id="Number of atoms" 
+                        id="AtomCount" 
                         class="p-1 rounded w-20 shadow-sm
                             bg-white dark:bg-gray-800 
                             text-gray-900 dark:text-gray-100
@@ -61,11 +63,11 @@ export const createModelSetupContent = () => {
                 </div>
 
                 <div class="flex gap-2 justify-between">
-                    <label for="Atomic Mass" class="flex text-gray-700 dark:text-gray-300">
+                    <label for="AtomicMass" class="flex text-gray-700 dark:text-gray-300">
                         Atomic Mass
                     </label>
                     <input type="number" 
-                        id="Atomic Mass" 
+                        id="AtomicMass" 
                         class="p-1 rounded w-20 shadow-sm
                             bg-white dark:bg-gray-800 
                             text-gray-900 dark:text-gray-100

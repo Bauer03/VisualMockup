@@ -2,8 +2,9 @@ export const createPotentialParameters = (): HTMLElement => {
     const form = document.createElement('div');
     form.className = `
         grid gap-2 bg-white dark:bg-gray-800 p-2 rounded shadow relative
-        after:content-['Potential_Parameters'] after:absolute after:-top-5 after:-right-0 italic after:text-sm after:text-slate-500 after:font-mono
-    `;
+        `;
+        // didn't end up adding the below because of spacing. may add back later? it's an after label that says, in italics, potential parameters.
+        // after:content-['Potential_Parameters'] after:absolute after:-top-5 after:-right-0 italic after:text-sm after:text-slate-500 after:font-mono
     form.id = 'potential-parameters';
     form.innerHTML = `
             <div class="flex gap-2 justify-between">
