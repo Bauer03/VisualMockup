@@ -4,20 +4,28 @@ export class DataManager {
     private static readonly STORAGE_KEY = 'virtualSubstance_output'; // does uid matter?
 
     static saveOutputData(data: OutputData): void {
+        console.log("saving data");
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
         this.updateOutputDisplay(data);
     }
 
     static loadOutputData(): OutputData | null {
         const stored = localStorage.getItem(this.STORAGE_KEY);
-        if (!stored) return null;
+        if (!stored) {
+            console.log("loadOutputData(): No data in localStorage to load");
+            return null;
+        }
         
         const data = JSON.parse(stored) as OutputData;
-        this.updateOutputDisplay(data);
+        // this.updateOutputDisplay(data);
         return data;
     }
 
-    private static updateOutputDisplay(data: OutputData): void {
+    static removeOutputData(): void {
+        localStorage.removeItem(this.STORAGE_KEY);
+    }
+
+    static updateOutputDisplay(data: OutputData): void {
         // Update basic measurements
         this.updateElement('temperature-sample', data.basic.temperature.sample);
         this.updateElement('temperature-average', data.basic.temperature.average);

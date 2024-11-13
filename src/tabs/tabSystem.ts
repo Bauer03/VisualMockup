@@ -18,7 +18,7 @@ export class TabSystem {
         
         this.contentContainer = document.createElement('div');
         this.contentContainer.className = 'flex flex-col gap-8 px-3';
-        
+
         this.initialize();
     }
 

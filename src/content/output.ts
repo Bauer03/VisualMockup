@@ -8,9 +8,9 @@ export const createOutputContent = (): HTMLElement => {
     const headerHtml = `
         <div class="flex justify-between items-center border-b dark:border-gray-600">
             <div class="flex gap-2">
-                <button id="basic-tab" 
+                <button id="basic-tab"
                     class="px-3 py-1 font-light hover:bg-gray-100 dark:hover:bg-gray-700 
-                    transition-colors duration-200 border-b-2 border-blue-500">
+                    transition-colors duration-200 border-b-2 border-blue-400">
                     Basic
                 </button>
                 <button id="energy-tab"
@@ -104,18 +104,18 @@ export const createOutputContent = (): HTMLElement => {
     const energyContent = content.querySelector('#energy-content') as HTMLDivElement;
 
     basicTab.addEventListener('click', () => {
-        basicTab.classList.add('border-blue-500');
+        basicTab.classList.add('border-blue-400');
         basicTab.classList.remove('border-transparent');
-        energyTab.classList.remove('border-blue-500');
+        energyTab.classList.remove('border-blue-400');
         energyTab.classList.add('border-transparent');
         basicContent.classList.remove('hidden');
         energyContent.classList.add('hidden');
     });
 
     energyTab.addEventListener('click', () => {
-        energyTab.classList.add('border-blue-500');
+        energyTab.classList.add('border-blue-400');
         energyTab.classList.remove('border-transparent');
-        basicTab.classList.remove('border-blue-500');
+        basicTab.classList.remove('border-blue-400');
         basicTab.classList.add('border-transparent');
         energyContent.classList.remove('hidden');
         basicContent.classList.add('hidden');
@@ -123,26 +123,16 @@ export const createOutputContent = (): HTMLElement => {
 
     const savedData = DataManager.loadOutputData();
     
-    if (!savedData) {
-        const initialData = {
-            basic: {
-                temperature: { sample: 0, average: 0 },
-                pressure: { sample: 0, average: 0 },
-                volume: { sample: 0, average: 0 }
-            },
-            energy: {
-                total: { sample: 0, average: 0 },
-                kinetic: { sample: 0, average: 0 },
-                potential: { sample: 0, average: 0 }
-            }
-        };
-        DataManager.saveOutputData(initialData);
+    if(savedData) {
+        DataManager.updateOutputDisplay(savedData);
     }
 
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', () => {
+        console.log('Copying data to notebook');
         const currentData = DataManager.collectCurrentOutputData();
-        console.log('Copying data to notebook:', currentData);
+        DataManager.saveOutputData(currentData);
+        dispatchEvent(new CustomEvent('copy-notebook'));
     });
 
     return content;
