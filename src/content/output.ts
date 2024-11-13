@@ -1,3 +1,5 @@
+import { DataManager } from '../util/data-manager.js';
+
 export const createOutputContent = (): HTMLElement => {
     const content = document.createElement("div");
     content.className = "grid px-3 gap-2";
@@ -117,6 +119,30 @@ export const createOutputContent = (): HTMLElement => {
         basicTab.classList.add('border-transparent');
         energyContent.classList.remove('hidden');
         basicContent.classList.add('hidden');
+    });
+
+    const savedData = DataManager.loadOutputData();
+    
+    if (!savedData) {
+        const initialData = {
+            basic: {
+                temperature: { sample: 0, average: 0 },
+                pressure: { sample: 0, average: 0 },
+                volume: { sample: 0, average: 0 }
+            },
+            energy: {
+                total: { sample: 0, average: 0 },
+                kinetic: { sample: 0, average: 0 },
+                potential: { sample: 0, average: 0 }
+            }
+        };
+        DataManager.saveOutputData(initialData);
+    }
+
+    const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
+    copyButton.addEventListener('click', () => {
+        const currentData = DataManager.collectCurrentOutputData();
+        console.log('Copying data to notebook:', currentData);
     });
 
     return content;

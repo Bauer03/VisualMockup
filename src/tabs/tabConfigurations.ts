@@ -1,4 +1,4 @@
-import { Tab } from '../types/tab.js';
+import { Tab } from '../types/types.js';
 import { createModelSetupContent } from '../content/modelSetup.js';
 import { createOutputContent } from '../content/output.js';
 import { createNotebookContent } from '../content/notebook.js';

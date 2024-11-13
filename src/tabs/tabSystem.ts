@@ -1,4 +1,4 @@
-import { Tab } from '../types/tab.js';
+import { Tab } from '../types/types.js';
 
 export class TabSystem {
     private container: HTMLElement;
