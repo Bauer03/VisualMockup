@@ -1,4 +1,4 @@
-import { OutputData, ModelSetupData } from '../types/types.js';
+import { OutputData, ModelSetupData } from '../types/types';
 
 export class DataManager {
     private static readonly STORAGE_KEY = 'virtualSubstance_output'; // does uid matter?

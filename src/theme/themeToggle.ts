@@ -1,4 +1,4 @@
-import { ThemeManager } from './themeManager.js';
+import { ThemeManager } from './themeManager';
 
 export function setupThemeToggle(buttonId: string): void {
     const button = document.getElementById(buttonId);

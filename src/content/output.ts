@@ -1,4 +1,4 @@
-import { DataManager } from '../util/data-manager.js';
+import { DataManager } from '../util/data-manager';
 
 export const createOutputContent = (): HTMLElement => {
     const content = document.createElement("div");

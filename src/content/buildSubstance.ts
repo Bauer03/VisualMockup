@@ -1,16 +1,19 @@
-import { wait } from '../util/wait.js';
+import { wait } from '../util/wait';
 
 export const buildSubstanceSection = (): HTMLElement => {
     const container = document.createElement('div');
     container.className = 'flex justify-between items-center content-center gap-2';
-    const buildSubstanceButton = document.createElement('button'); 
+    const buildSubstanceButton = document.createElement('button');
+    buildSubstanceButton.id = 'build-substance-button';
     buildSubstanceButton.className = 'flex items-center justify-between gap-2 px-3 py-2 w-full text-sm shadow-sm rounded bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200';
     buildSubstanceButton.innerHTML = `
         <span>Build Substance</span>
         <span class="material-icons text-sm">build</span>
     `;
     const runSimulationButton = document.createElement('button'); 
-    runSimulationButton.className = 'flex items-center justify-between gap-2 px-3 py-2 w-full text-sm shadow-sm rounded bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200';
+    runSimulationButton.id = 'run-simulation-button';
+    runSimulationButton.className = 'flex items-center justify-between gap-2 px-3 py-2 w-full text-sm shadow-sm rounded bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed';
+    runSimulationButton.disabled = true;
     runSimulationButton.innerHTML = `
         <span>Run Simulation</span>
         <span class="material-icons text-sm">play_arrow</span>

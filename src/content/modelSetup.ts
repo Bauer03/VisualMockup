@@ -1,5 +1,4 @@
-
-import { createPotentialParameters } from './potentialParameters.js';
+import { createPotentialParameters } from './potentialParameters';
 
 export const createModelSetupContent = (): HTMLElement => {
     const content = document.createElement('div');

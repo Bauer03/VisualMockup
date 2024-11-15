@@ -1,7 +1,8 @@
-import { buildSubstanceSection } from './content/buildSubstance.js';
-import { TabSystem } from './tabs/tabSystem.js';
-import { topMenuTabs, bottomMenuTabs } from './tabs/tabConfigurations.js';
-import { setupThemeToggle } from './theme/themeToggle.js';
+import { buildSubstanceSection } from './content/buildSubstance';
+import { TabSystem } from './tabs/tabSystem';
+import { topMenuTabs, bottomMenuTabs } from './tabs/tabConfigurations';
+import { setupThemeToggle } from './theme/themeToggle';
+import { Scene3D } from './simulation/scene';
 
 // creating tabs
 const topMenu = new TabSystem('top-menu-container', topMenuTabs);
@@ -16,3 +17,29 @@ if(bottomRight) {
 else console.log('Could not find bottom right menu container - Build Substance button not added');
 
 setupThemeToggle('theme-toggle');
+
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+if (canvas) {
+    let scene = new Scene3D(canvas);
+    let buildSubstanceButton = document.getElementById('build-substance-button') as HTMLButtonElement;
+    buildSubstanceButton.addEventListener('click', () => {
+        runSimulationButton.disabled = false;
+        console.log('Building substance');
+    });
+    let runSimulationButton = document.getElementById('run-simulation-button') as HTMLButtonElement;
+    runSimulationButton.addEventListener('click', async () => {
+        console.log('Running simulation');
+        await runSimulation(scene).then(() => {
+            scene.rotate = false;
+        });
+    });
+}
+
+function runSimulation(scene: Scene3D): Promise<void> {
+    scene.rotate = true;
+    return new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, 1000);
+    });
+}

@@ -1,5 +1,5 @@
-import { DataManager } from "../util/data-manager.js";
-import { OutputData } from "../types/types.js";
+import { DataManager } from "../util/data-manager";
+import { OutputData } from "../types/types";
 
 export const createNotebookContent = (): HTMLElement => { // note: this gets loaded immediately...
   const content = document.createElement("div");

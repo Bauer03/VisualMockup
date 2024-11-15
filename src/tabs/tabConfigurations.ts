@@ -1,9 +1,9 @@
-import { Tab } from '../types/types.js';
-import { createModelSetupContent } from '../content/modelSetup.js';
-import { createOutputContent } from '../content/output.js';
-import { createNotebookContent } from '../content/notebook.js';
-import { createRunDynamicsContent } from '../content/runDynamics.js';
-import { createCommandScriptsContent } from '../content/commandScripts.js';
+import { Tab } from '../types/types';
+import { createModelSetupContent } from '../content/modelSetup';
+import { createOutputContent } from '../content/output';
+import { createNotebookContent } from '../content/notebook';
+import { createRunDynamicsContent } from '../content/runDynamics';
+import { createCommandScriptsContent } from '../content/commandScripts';
 
 export const topMenuTabs: Tab[] = [
     {
