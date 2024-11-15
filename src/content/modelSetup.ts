@@ -8,78 +8,62 @@ export const createModelSetupContent = (): HTMLElement => {
     // Create the form content
     const formContent = document.createElement('div');
     formContent.className = 'flex flex-col gap-4';
+    // Only showing the main HTML template with updated styles - rest of code remains the same
     formContent.innerHTML = `
-        <div class="flex justify-between gap-8">
-            <fieldset class="flex flex-col gap-2">
-                <label for="AtomType" class="text-gray-700 dark:text-gray-300">Atom Type</label>
-                <select id="AtomType" class="w-full rounded shadow-sm 
-                    bg-white dark:bg-gray-800 
-                    text-gray-900 dark:text-gray-100
-                    border border-gray-200 dark:border-gray-700">
-                    <option value="He">He</option>
-                    <option value="Ne">Ne</option>
-                    <option value="Ar">Ar</option>
-                    <option value="Kr">Kr</option>
-                    <option value="Xe">Xe</option>
-                    <option value="User">User</option>
-                </select>
-            </fieldset>
+    <div class="flex justify-between gap-8">
+        <fieldset class="flex flex-col gap-2">
+            <label for="AtomType" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Atom Type</label>
+            <select id="AtomType">
+                <option value="He">He</option>
+                <option value="Ne">Ne</option>
+                <option value="Ar">Ar</option>
+                <option value="Kr">Kr</option>
+                <option value="Xe">Xe</option>
+                <option value="User">User</option>
+            </select>
+        </fieldset>
 
-            <fieldset class="flex flex-col gap-2">
-                <label for="Boundary" class="text-gray-700 dark:text-gray-300">Boundary</label>
-                <select id="Boundary" class="w-full rounded shadow-sm
-                    bg-white dark:bg-gray-800 
-                    text-gray-900 dark:text-gray-100
-                    border border-gray-200 dark:border-gray-700">
-                    <option value="FixedWalls">Fixed Walls</option>
-                    <option value="Periodic">Periodic</option>
-                </select>
-            </fieldset>
+        <fieldset class="flex flex-col gap-2">
+            <label for="Boundary" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Boundary</label>
+            <select id="Boundary">
+                <option value="FixedWalls">Fixed Walls</option>
+                <option value="Periodic">Periodic</option>
+            </select>
+        </fieldset>
 
-            <fieldset class="flex flex-col gap-2">
-                <label for="PotentialModel" class="text-gray-700 dark:text-gray-300">Potential Model</label>
-                <select id="PotentialModel" class="w-full rounded shadow-sm
-                    bg-white dark:bg-gray-800 
-                    text-gray-900 dark:text-gray-100
-                    border border-gray-200 dark:border-gray-700">
-                    <option value="NoPotential">No Potential</option>
-                    <option value="LennardJones">LennardJones</option>
-                    <option value="SoftSphere">Soft Sphere</option>
-                </select>
-            </fieldset>
-        </div>
+        <fieldset class="flex flex-col gap-2">
+            <label for="PotentialModel" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Potential Model</label>
+            <select id="PotentialModel">
+                <option value="NoPotential">No Potential</option>
+                <option value="LennardJones">LennardJones</option>
+                <option value="SoftSphere">Soft Sphere</option>
+            </select>
+        </fieldset>
+    </div>
 
-        <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
-            <div class="grid gap-2 ps-0 px-4 py-2">
-                <div class="flex gap-2 justify-between">
-                    <label for="AtomCount" class="flex text-gray-700 dark:text-gray-300 items-center">
-                        Num. of atoms
-                    </label>
-                    <input type="number" 
-                        id="AtomCount" 
-                        class="p-1 rounded w-20 shadow-sm
-                            bg-white dark:bg-gray-800 
-                            text-gray-900 dark:text-gray-100
-                            border border-gray-200 dark:border-gray-700
-                            focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                            focus:border-transparent">
-                </div>
+    <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
+        <div class="grid gap-2 ps-0 px-4 py-2">
+            <div class="flex gap-2 justify-between">
+                <label for="AtomCount" class="flex justify-between items-center">
+                    <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Num. of atoms</span>
+                </label>
+                <input type="number" 
+                    id="AtomCount" 
+                    class="block w-20 py-2 px-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                    placeholder="10">
+            </div>
 
-                <div class="flex gap-2 justify-between">
-                    <label for="AtomicMass" class="flex text-gray-700 dark:text-gray-300 items-center">
-                        Atomic Mass
-                    </label>
-                    <input type="number" 
-                        id="AtomicMass" 
-                        class="p-1 rounded w-20 shadow-sm
-                            bg-white dark:bg-gray-800 
-                            text-gray-900 dark:text-gray-100
-                            border border-gray-200 dark:border-gray-700
-                            focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                            focus:border-transparent">
-                </div>
+            <div class="flex gap-2 justify-between">
+                <label for="AtomicMass" class="flex justify-between items-center">
+                    <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Atomic Mass</span>
+                </label>
+                <input type="number" 
+                    id="AtomicMass" 
+                    class="block w-20 py-2 px-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
+                    placeholder="4">
             </div>
         </div>
+    </div>
     `;
 
     let pModelDropdown = formContent.querySelector("#PotentialModel") as HTMLSelectElement;

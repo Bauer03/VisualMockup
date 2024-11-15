@@ -25,17 +25,18 @@ Average Potential Energy: ${data.energy.potential.average}`;
     w-full p-2 rounded text-sm bg-white dark:bg-gray-800
     border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200`;
   let clearBtn = document.createElement("button");
-  clearBtn.className = `px-2 py-1 text-xs shadow-sm rounded font-light
-                hover:bg-white dark:hover:bg-gray-800
-                bg-gray-100 dark:bg-gray-700
-                text-gray-800 dark:text-gray-200
-                border border-white dark:border-gray-600
-                transition-colors duration-200 items-center
-                flex gap-1`;
+  clearBtn.className = 
+    `px-2 py-1 text-xs shadow-sm rounded font-light
+    hover:bg-white dark:hover:bg-gray-800
+    bg-gray-100 dark:bg-gray-700
+    text-gray-800 dark:text-gray-200
+    border border-white dark:border-gray-600
+    transition-colors duration-200 items-center
+    flex gap-1`;
   clearBtn.innerHTML = `
         <span>Clear Notebook</span>
         <span class="material-icons text-sm">delete</span>
-    `;
+  `;
   clearBtn.addEventListener("click", () => {
     textArea.value = "";
     DataManager.removeOutputData();
@@ -50,7 +51,8 @@ Average Potential Energy: ${data.energy.potential.average}`;
   window.addEventListener('copy-notebook', () => {
     let data = DataManager.loadOutputData() as OutputData;
     if (data) {
-      textArea.value = `Sample Temperature: ${data.basic.temperature.sample}
+      textArea.value = 
+      `Sample Temperature: ${data.basic.temperature.sample}
 Average Temperature: ${data.basic.temperature.average}
 Sample Pressure: ${data.basic.pressure.sample}
 Average Pressure: ${data.basic.pressure.average}

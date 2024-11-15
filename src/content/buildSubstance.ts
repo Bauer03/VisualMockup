@@ -2,20 +2,24 @@ import { wait } from '../util/wait.js';
 
 export const buildSubstanceSection = (): HTMLElement => {
     const container = document.createElement('div');
-    container.className = 'flex justify-between items-center content-center gap-4';
-    const button = document.createElement('button'); 
-    button.className = 'px-4 py-3 shadow-sm rounded uppercase bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200';
-    button.innerHTML = `
+    container.className = 'flex justify-between items-center content-center gap-2';
+    const buildSubstanceButton = document.createElement('button'); 
+    buildSubstanceButton.className = 'flex items-center justify-between gap-2 px-3 py-2 w-full text-sm shadow-sm rounded bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200';
+    buildSubstanceButton.innerHTML = `
         <span>Build Substance</span>
         <span class="material-icons text-sm">build</span>
     `;
-    button.onclick = async () => {
-        console.log('Building Substance');
-        button.classList.add('animate-bounce');
-        await wait(500);
-        button.classList.remove('animate-bounce');
-        console.log('Substance Built');
-    };
+    const runSimulationButton = document.createElement('button'); 
+    runSimulationButton.className = 'flex items-center justify-between gap-2 px-3 py-2 w-full text-sm shadow-sm rounded bg-blue-200 dark:bg-blue-800 hover:bg-blue-300 dark:hover:bg-blue-700 text-gray-800 dark:text-gray-200 transition-colors duration-200';
+    runSimulationButton.innerHTML = `
+        <span>Run Simulation</span>
+        <span class="material-icons text-sm">play_arrow</span>
+    `;
+
+    let substanceButtons = document.createElement('div');
+    substanceButtons.className = 'flex flex-col items-center gap-2';
+    substanceButtons.appendChild(buildSubstanceButton);
+    substanceButtons.appendChild(runSimulationButton);
     
     let substanceControls = document.createElement('div');
     substanceControls.className = 'flex items-center gap-4'
@@ -70,6 +74,6 @@ export const buildSubstanceSection = (): HTMLElement => {
     substanceControls.appendChild(rotationControls);
     substanceControls.appendChild(zoomControls);
     container.appendChild(substanceControls);
-    container.appendChild(button);
+    container.appendChild(substanceButtons);
     return container;
 };
