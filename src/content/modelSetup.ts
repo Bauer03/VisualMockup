@@ -1,3 +1,4 @@
+
 import { createPotentialParameters } from './potentialParameters.js';
 
 export const createModelSetupContent = (): HTMLElement => {
@@ -8,7 +9,7 @@ export const createModelSetupContent = (): HTMLElement => {
     const formContent = document.createElement('div');
     formContent.className = 'flex flex-col gap-4';
     formContent.innerHTML = `
-        <div class="flex justify-between">
+        <div class="flex justify-between gap-8">
             <fieldset class="flex flex-col gap-2">
                 <label for="AtomType" class="text-gray-700 dark:text-gray-300">Atom Type</label>
                 <select id="AtomType" class="w-full rounded shadow-sm 
@@ -51,7 +52,7 @@ export const createModelSetupContent = (): HTMLElement => {
         <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
             <div class="grid gap-2 ps-0 px-4 py-2">
                 <div class="flex gap-2 justify-between">
-                    <label for="AtomCount" class="flex text-gray-700 dark:text-gray-300">
+                    <label for="AtomCount" class="flex text-gray-700 dark:text-gray-300 items-center">
                         Num. of atoms
                     </label>
                     <input type="number" 
@@ -65,7 +66,7 @@ export const createModelSetupContent = (): HTMLElement => {
                 </div>
 
                 <div class="flex gap-2 justify-between">
-                    <label for="AtomicMass" class="flex text-gray-700 dark:text-gray-300">
+                    <label for="AtomicMass" class="flex text-gray-700 dark:text-gray-300 items-center">
                         Atomic Mass
                     </label>
                     <input type="number" 

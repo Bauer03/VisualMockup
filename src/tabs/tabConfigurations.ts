@@ -2,10 +2,8 @@ import { Tab } from '../types/types.js';
 import { createModelSetupContent } from '../content/modelSetup.js';
 import { createOutputContent } from '../content/output.js';
 import { createNotebookContent } from '../content/notebook.js';
-import { createConfigurationContent } from '../content/configuration.js';
 import { createRunDynamicsContent } from '../content/runDynamics.js';
 import { createCommandScriptsContent } from '../content/commandScripts.js';
-import { createGraphicsContent } from '../content/graphics.js';
 
 export const topMenuTabs: Tab[] = [
     {
@@ -26,12 +24,6 @@ export const topMenuTabs: Tab[] = [
         content: createCommandScriptsContent(),
         materialIcon: "code"
     },
-    {
-        id: 'graphics',
-        label: 'Graphics',
-        content: createGraphicsContent(),
-        materialIcon: "image"
-    }
 ];
 
 export const bottomMenuTabs: Tab[] = [
@@ -46,11 +38,5 @@ export const bottomMenuTabs: Tab[] = [
         label: 'Notebook',
         content: createNotebookContent(),
         materialIcon: "edit_note"
-    },
-    {
-        id: 'configuration',
-        label: 'Configuration',
-        content: createConfigurationContent(),
-        materialIcon: "tune"
     }
 ];

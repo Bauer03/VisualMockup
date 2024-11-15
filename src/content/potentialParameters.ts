@@ -8,7 +8,7 @@ export const createPotentialParameters = (): HTMLElement => {
     form.id = 'potential-parameters';
     form.innerHTML = `
             <div class="flex gap-2 justify-between">
-                <label for="sigma" class="flex text-gray-700 dark:text-gray-300">
+                <label for="sigma" class="flex text-gray-700 dark:text-gray-300 items-center">
                     Sigma (Ang)
                 </label>
                 <input type="number"
@@ -21,7 +21,7 @@ export const createPotentialParameters = (): HTMLElement => {
                         focus:border-transparent">
             </div>
             <div class="flex gap-2 justify-between">
-                <label for="epsilon" class="flex text-gray-700 dark:text-gray-300">
+                <label for="epsilon" class="flex text-gray-700 dark:text-gray-300 items-center">
                     Epsilon
                 </label>
                 <input type="number"

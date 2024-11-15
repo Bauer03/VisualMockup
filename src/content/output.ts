@@ -2,7 +2,7 @@ import { DataManager } from '../util/data-manager.js';
 
 export const createOutputContent = (): HTMLElement => {
     const content = document.createElement("div");
-    content.className = "grid px-3 gap-2";
+    content.className = "grid px-3 gap-2 min-h-[165px] content-start";
 
     // header with tabs and copy button 
     const headerHtml = `
@@ -18,16 +18,21 @@ export const createOutputContent = (): HTMLElement => {
                     transition-colors duration-200 border-b-2 border-transparent">
                     Energy
                 </button>
+                <button id="time-tab"
+                    class="px-3 py-1 font-light hover:bg-gray-100 dark:hover:bg-gray-700 
+                    transition-colors duration-200 border-b-2 border-transparent">
+                    Time
+                </button>
             </div>
             <button 
                 id="copy-notebook"
-                class="px-2 py-1 text-xs shadow-sm rounded font-light
+                class="text-xs shadow-sm rounded font-light
                 hover:bg-white dark:hover:bg-gray-800
                 bg-gray-100 dark:bg-gray-700
                 text-gray-800 dark:text-gray-200
-                border border-gray-200 dark:border-gray-600
+                border border-white dark:border-gray-600
                 transition-colors duration-200 items-center
-                flex gap-1">
+                flex gap-1 px-3 py-2 mb-1">
                 <span>Copy to Notebook</span>
                 <span class="material-icons text-xs">content_copy</span>
             </button>
@@ -88,10 +93,34 @@ export const createOutputContent = (): HTMLElement => {
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Potential Energy (J/mol)</td>
                             <td id="potential-energy-sample" class="text-right w-16">20</td>
-                            <td id="total-energy-average" class="text-right w-16">20</td>
+                            <td id="potential-energy-average" class="text-right w-16">20</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div id="time-content" class="hidden">
+                <div class="grid grid-cols-2 gap-8 text-sm">
+                    <div class="grid gap-2">
+                        <div class="flex gap-4 justify-between">
+                            <span>Time (ps)</span>
+                            <span id="current-time" class="w-16 text-right">20</span>
+                        </div>
+                        <div class="flex gap-4 justify-between">
+                            <span>Total Time (ps)</span>
+                            <span id="total-time" class="w-16 text-right">20</span>
+                        </div>
+                    </div>
+                    <div class="grid gap-2">
+                        <div class="flex gap-4 justify-between">
+                            <span>Run Time</span>
+                            <span id="run-time" class="w-16 text-right">20</span>
+                        </div>
+                        <div class="flex gap-4 justify-between">
+                            <span>Total Time</span>
+                            <span id="total-runtime" class="w-16 text-right">20</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `;
@@ -100,29 +129,41 @@ export const createOutputContent = (): HTMLElement => {
 
     const basicTab = content.querySelector('#basic-tab') as HTMLButtonElement;
     const energyTab = content.querySelector('#energy-tab') as HTMLButtonElement;
+    const timeTab = content.querySelector('#time-tab') as HTMLButtonElement;
     const basicContent = content.querySelector('#basic-content') as HTMLDivElement;
     const energyContent = content.querySelector('#energy-content') as HTMLDivElement;
+    const timeContent = content.querySelector('#time-content') as HTMLDivElement;
+
+    const hideAllTabs = () => {
+        [basicContent, energyContent, timeContent].forEach(content => content.classList.add('hidden'));
+        [basicTab, energyTab, timeTab].forEach(tab => {
+            tab.classList.remove('border-blue-400');
+            tab.classList.add('border-transparent');
+        });
+    };
 
     basicTab.addEventListener('click', () => {
+        hideAllTabs();
         basicTab.classList.add('border-blue-400');
         basicTab.classList.remove('border-transparent');
-        energyTab.classList.remove('border-blue-400');
-        energyTab.classList.add('border-transparent');
         basicContent.classList.remove('hidden');
-        energyContent.classList.add('hidden');
     });
 
     energyTab.addEventListener('click', () => {
+        hideAllTabs();
         energyTab.classList.add('border-blue-400');
         energyTab.classList.remove('border-transparent');
-        basicTab.classList.remove('border-blue-400');
-        basicTab.classList.add('border-transparent');
         energyContent.classList.remove('hidden');
-        basicContent.classList.add('hidden');
+    });
+
+    timeTab.addEventListener('click', () => {
+        hideAllTabs();
+        timeTab.classList.add('border-blue-400');
+        timeTab.classList.remove('border-transparent');
+        timeContent.classList.remove('hidden');
     });
 
     const savedData = DataManager.loadOutputData();
-    
     if(savedData) {
         DataManager.updateOutputDisplay(savedData);
     }

@@ -17,7 +17,7 @@ export class TabSystem {
         this.tabButtons = new Map();
         
         this.contentContainer = document.createElement('div');
-        this.contentContainer.className = 'flex flex-col gap-8 px-3';
+        this.contentContainer.className = 'flex flex-col gap-8 px-3 min-w-[520px]';
 
         this.initialize();
     }

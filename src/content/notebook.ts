@@ -22,33 +22,20 @@ Average Potential Energy: ${data.energy.potential.average}`;
   }
   textArea.id = "notebook-contents";
   textArea.className = `
-    w-full min-h-32 max-h-48 p-2 rounded text-sm bg-white dark:bg-gray-800 
+    w-full p-2 rounded text-sm bg-white dark:bg-gray-800
     border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200`;
   let clearBtn = document.createElement("button");
   clearBtn.className = `px-2 py-1 text-xs shadow-sm rounded font-light
                 hover:bg-white dark:hover:bg-gray-800
                 bg-gray-100 dark:bg-gray-700
                 text-gray-800 dark:text-gray-200
-                border border-gray-200 dark:border-gray-600
+                border border-white dark:border-gray-600
                 transition-colors duration-200 items-center
                 flex gap-1`;
   clearBtn.innerHTML = `
         <span>Clear Notebook</span>
         <span class="material-icons text-sm">delete</span>
     `;
-  // let saveBtn = document.createElement("button");
-  // saveBtn.id = "save-notebook";
-  // saveBtn.className = `px-2 py-1 text-xs shadow-sm rounded font-light
-  //               hover:bg-white dark:hover:bg-gray-800
-  //               bg-gray-100 dark:bg-gray-700
-  //               text-gray-800 dark:text-gray-200
-  //               border border-gray-200 dark:border-gray-600
-  //               transition-colors duration-200 items-center
-  //               flex gap-1`;
-  // saveBtn.innerHTML = `
-  //       <span>Save</span>
-  //       <span class="material-icons text-sm">save</span>
-  //   `;
   clearBtn.addEventListener("click", () => {
     textArea.value = "";
     DataManager.removeOutputData();
@@ -59,15 +46,6 @@ Average Potential Energy: ${data.energy.potential.average}`;
   buttoncontainer.appendChild(clearBtn);
   content.appendChild(buttoncontainer);
   content.appendChild(textArea);
-
-  
-  // let saveButton = content.querySelector("#save-notebook") as HTMLButtonElement;
-  // saveButton.addEventListener("click", () => {
-  //   let data = DataManager.loadOutputData() as OutputData;
-  //   if(textArea.value.length > 0){
-  //     DataManager.saveOutputData(data);
-  //   } else DataManager.removeOutputData();
-  // });
 
   window.addEventListener('copy-notebook', () => {
     let data = DataManager.loadOutputData() as OutputData;
