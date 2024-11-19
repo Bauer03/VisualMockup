@@ -36,10 +36,15 @@ export interface OutputData {
         };
     };
 }
+
+// types here make sure i'm not passing in wrong data & for autocompletion
+export type atomType = "He" | "Ne" | "Ar" | "Kr" | "Xe" | "User";
+export type boundary = "Fixed Walls" | "Periodic";
+export type potentialModel = "Lennard-Jones" | "No Potential" | "Soft Sphere";
 export interface ModelSetupData {
-    atomType: string;
-    boundary: string;
-    potentialModel: string;
+    atomType: atomType;
+    boundary: boundary;
+    potentialModel: potentialModel;
     numAtoms: number;
     atomicMass: number;
     potentialParams?: {
@@ -47,3 +52,24 @@ export interface ModelSetupData {
         epsilon?: number;
     };
 }
+
+export type simulationType = "Const-PT" | "Const-VT";
+export interface RunDynamicsData {
+    simulationType: simulationType;
+    temperature: number;
+    volume: number;
+    timeStep: number;
+    stepCount: number;
+    interval: number;
+}
+
+export type scriptData = string;
+export interface ScriptData {
+    script: scriptData;
+}
+
+export interface SelectedData {
+    ModelSetupData: ModelSetupData,
+    RunDynamicsData: RunDynamicsData,
+    ScriptData:ScriptData;
+};

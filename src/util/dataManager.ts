@@ -1,14 +1,16 @@
-import { OutputData, ModelSetupData } from '../types/types';
+import { OutputData, ModelSetupData, atomType, boundary, potentialModel, RunDynamicsData, ScriptData, simulationType, SelectedData } from '../types/types';
 
 export class DataManager {
     private static readonly STORAGE_KEY = 'virtualSubstance_output'; // does uid matter?
 
+    // Save data to localStorage
     static saveOutputData(data: OutputData): void {
         console.log("saving data");
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
         this.updateOutputDisplay(data);
     }
 
+    // Get the data from localStorage
     static loadOutputData(): OutputData | null {
         const stored = localStorage.getItem(this.STORAGE_KEY);
         if (!stored) {
@@ -81,9 +83,53 @@ export class DataManager {
             }
         };
     }
+    
+    static collectSelectedData(): SelectedData {
+        return {
+            ModelSetupData: this.collectCurrentModelSetupData(),
+            RunDynamicsData: this.collectCurrentRunDynamicsData(),
+            ScriptData: this.collectCurrentScriptData()
+        };
+    }
+
+    static collectCurrentModelSetupData(): ModelSetupData {
+        return {
+            atomType: this.getElementValueAsString('AtomType') as atomType,
+            boundary: this.getElementValueAsString('Boundary') as boundary,
+            potentialModel: this.getElementValueAsString('PotentialModel') as potentialModel,
+            numAtoms: this.getElementValue('AtomCount'),
+            atomicMass: this.getElementValue('AtomicMass'),
+            potentialParams: {
+                sigma: this.getElementValue('sigma'),
+                epsilon: this.getElementValue('epsilon')
+            }
+        };
+    }
+
+    static collectCurrentRunDynamicsData(): RunDynamicsData {
+        return {
+            simulationType: this.getElementValueAsString('simulationType') as simulationType,
+            temperature: this.getElementValue('temperature'),
+            volume: this.getElementValue('volume'),
+            timeStep: this.getElementValue('timeStep'),
+            stepCount: this.getElementValue('stepCount'),
+            interval: this.getElementValue('interval')
+        };
+    }
+
+    static collectCurrentScriptData(): ScriptData {
+        return {
+            script: this.getElementValueAsString('script')
+        };
+    }
 
     private static getElementValue(id: string): number {
         const element = document.getElementById(id);
         return element ? parseFloat(element.textContent || '0') : 0;
+    }
+
+    private static getElementValueAsString(id: string): string {
+        const element = document.getElementById(id);
+        return element ? element.textContent || '' : '';
     }
 }

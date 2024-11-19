@@ -1,4 +1,4 @@
-import { DataManager } from "../util/data-manager";
+import { DataManager } from "../util/dataManager";
 import { OutputData } from "../types/types";
 
 export const createNotebookContent = (): HTMLElement => { // note: this gets loaded immediately...
