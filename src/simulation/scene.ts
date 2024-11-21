@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { ModelSetupData, SelectedData, RunDynamicsData, ScriptData } from '../types/types';
+import { ThemeManager } from '../theme/themeManager'; // may need for mid render color changes, idk
 
 const defaultModelData: ModelSetupData = {
     atomType: 'He',
@@ -12,6 +13,7 @@ const defaultModelData: ModelSetupData = {
         epsilon: 1
     }
 };
+
 const defaultRunDynamicsData: RunDynamicsData = {
     simulationType: 'Const-PT',
     temperature: 0,
@@ -20,6 +22,7 @@ const defaultRunDynamicsData: RunDynamicsData = {
     stepCount: 0,
     interval: 0
 };
+
 const defaultScriptData: ScriptData = {
     script: 'Default Script Contents'
 };
@@ -33,14 +36,20 @@ export class Scene3D {
     private modelData: ModelSetupData;
     private runDynamicsData: RunDynamicsData;
     private ScriptData: ScriptData;
+    private selectedData: SelectedData;
     
+    private deltaScale = 1;
+    private lastTime = 0;
+    private _intervalID:number|null = null;
+
     private static readonly CANVAS_WIDTH = 400;
     private static readonly CANVAS_HEIGHT = 400;
 
-    constructor(canvas: HTMLCanvasElement, selectedData?: Partial<SelectedData>) {
-        this.modelData = selectedData?.ModelSetupData ?? defaultModelData;
-        this.runDynamicsData = selectedData?.RunDynamicsData ?? defaultRunDynamicsData;
-        this.ScriptData = selectedData?.ScriptData ?? defaultScriptData;
+    constructor(canvas: HTMLCanvasElement, selectedData: SelectedData) {
+        this.selectedData = selectedData;
+        this.modelData = selectedData.ModelSetupData ?? defaultModelData;
+        this.runDynamicsData = selectedData.RunDynamicsData ?? defaultRunDynamicsData;
+        this.ScriptData = selectedData.ScriptData ?? defaultScriptData;
 
         this.scene = new THREE.Scene();
 
@@ -60,15 +69,15 @@ export class Scene3D {
         this.renderer.setSize(Scene3D.CANVAS_WIDTH, Scene3D.CANVAS_HEIGHT, false);
 
         const geometry = new THREE.BoxGeometry(2,2,2);
-        const material = new THREE.MeshBasicMaterial({ 
+        const material = new THREE.MeshBasicMaterial({
             color: 0xF3F3F3,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.7
         });
         this.cube = new THREE.Mesh(geometry, material);
 
         const edges = new THREE.EdgesGeometry(geometry);
-        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x0F0F0F });
+        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0xAAAAAA });
         const edgeLines = new THREE.LineSegments(edges, edgesMaterial);
         this.cube.add(edgeLines);
 
@@ -79,10 +88,6 @@ export class Scene3D {
         this.animate();
     }
 
-    private deltaScale = 1;
-    private lastTime = 0;
-
-    private _intervalID:number|null = null;
     private animate = () => {
         this._intervalID = requestAnimationFrame(this.animate);
 
@@ -99,6 +104,7 @@ export class Scene3D {
         this.deltaScale = delta / (1000 / 60);
         this.lastTime = performance.now();
 
+        // Frame per second debug - don't delete
         // console.log(16.6667/delta*60, this.deltaScale);
     }
 
