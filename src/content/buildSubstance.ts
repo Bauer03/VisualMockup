@@ -1,6 +1,11 @@
+import { update } from "three/examples/jsm/libs/tween.module.js";
+import { getCurScene } from "../simulation/simulationManager";
+
 export const buildSubstanceSection = (): HTMLElement => {
     const container = document.createElement('div');
-    container.className = 'flex justify-between items-center content-center gap-2';
+    // container.className = 'flex justify-between items-center content-center gap-2';
+    container.className = 'flex justify-between items-center content-center gap-4 bg-gray-100 dark:bg-gray-700 rounded p-4 shadow h-full';
+    
     
     const buildSubstanceButton = document.createElement('button');
     buildSubstanceButton.id = 'build-substance-button';
@@ -55,38 +60,50 @@ export const buildSubstanceSection = (): HTMLElement => {
         text-gray-600 dark:text-gray-400
     `;
 
-    const createControlButton = (icon: string, onClick: () => void) => {
+    type ControlAction = 'rotate' | 'zoom';
+    type ControlParams = {
+        icon: string;
+        action: ControlAction;
+        axis?: 'x' | 'y';
+        sign?: '+' | '-';
+    };
+
+    const createControlButton = (params: ControlParams) => {
         const button = document.createElement('button');
         button.className = controlButtonClass;
-        button.innerHTML = `<span class="material-icons text-base">${icon}</span>`;
-        button.addEventListener('click', onClick);
+        button.innerHTML = `<span class="material-icons text-base">${params.icon}</span>`;
+        
+        button.addEventListener('click', () => {
+            const curScene = getCurScene();
+            if (!curScene) {
+                console.log("Substance may not be built yet.");
+                return;
+            }
+
+            if (params.action === 'rotate') {
+                console.log(`substance being rotated to face ${params.icon.replace('keyboard_arrow_', '')}`);
+                curScene.rotateSubstance({ rotationAxis: params.axis!, sign: params.sign! });
+            } else {
+                console.log(`${params.sign === '+' ? 'zooming in' : 'zooming out'}`)
+                curScene.zoomCamera(params.sign === '+' ? true : false);
+            }
+        });
+        
         return button;
     };
 
-    const rotateDown = createControlButton('keyboard_arrow_down', () => {
-        console.log("substance being rotated to face down");
-    });
-    const rotateUp = createControlButton('keyboard_arrow_up', () => {
-        console.log("substance being rotated to face up");
-    });
-    const rotateLeft = createControlButton('keyboard_arrow_left', () => {
-        console.log("substance being rotated to face left");
-    });
-    const rotateRight = createControlButton('keyboard_arrow_right', () => {
-        console.log("substance being rotated to face right");
-    });
+    const rotateDown = createControlButton({ icon: 'keyboard_arrow_down', action: 'rotate', axis: 'x', sign: '+' });
+    const rotateUp = createControlButton({ icon: 'keyboard_arrow_up', action: 'rotate', axis: 'x', sign: '-' });
+    const rotateLeft = createControlButton({ icon: 'keyboard_arrow_left', action: 'rotate', axis: 'y', sign: '-' });
+    const rotateRight = createControlButton({ icon: 'keyboard_arrow_right', action: 'rotate', axis: 'y', sign: '+' });
 
-    rotationControls.append(rotateDown, rotateUp, rotateLeft, rotateRight);
+    rotationControls.append(rotateLeft, rotateUp, rotateRight, rotateDown);
 
     const zoomControls = document.createElement('div');
     zoomControls.className = 'flex flex-col items-center gap-2';
     
-    const zoomIn = createControlButton('zoom_in', () => {
-        console.log("zooming in");
-    });
-    const zoomOut = createControlButton('zoom_out', () => {
-        console.log("zooming out");
-    });
+    const zoomIn = createControlButton({ icon: 'zoom_in', action: 'zoom', sign: '+' });
+    const zoomOut = createControlButton({ icon: 'zoom_out', action: 'zoom', sign: '-' });
 
     zoomControls.append(zoomIn, zoomOut);
     substanceControls.append(rotationControls, zoomControls);

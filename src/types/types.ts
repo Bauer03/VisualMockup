@@ -73,3 +73,10 @@ export interface SelectedData {
     RunDynamicsData: RunDynamicsData,
     ScriptData:ScriptData;
 };
+
+type sign = "+" | "-";
+type rotationAxis = "x" | "y" | "z";
+export type rotateOpx = {
+    rotationAxis: rotationAxis;
+    sign: sign;
+}

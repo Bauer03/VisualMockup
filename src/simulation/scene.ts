@@ -1,6 +1,7 @@
 import * as THREE from 'three';
-import { ModelSetupData, SelectedData, RunDynamicsData, ScriptData } from '../types/types';
+import { ModelSetupData, SelectedData, RunDynamicsData, ScriptData, rotateOpx } from '../types/types';
 import { ThemeManager } from '../theme/themeManager'; // may need for mid render color changes, idk
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 const defaultModelData: ModelSetupData = {
     atomType: 'He',
@@ -113,8 +114,42 @@ export class Scene3D {
             cancelAnimationFrame(this._intervalID);
             this._intervalID = null;
         }
-        for(const child of this.scene.children) {
-            this.scene.remove(child);
+        this.scene.clear();
+        
+        // don't necessarily need to do this, but it visually indicates that the substance is no longer built
+        this.cube.visible = false;
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    /**
+     * Rotates the substance in the direction specified by the rotateOpx object.
+     */
+    rotateSubstance(rotateOpx: rotateOpx): void {
+        switch(rotateOpx.rotationAxis) {
+            case 'x':
+                if (rotateOpx.sign === '-') {
+                    this.cube.rotation.x -= 0.04;
+                } else this.cube.rotation.x += 0.04;
+                break;
+            case 'y':
+                if (rotateOpx.sign === '-') {
+                    this.cube.rotation.y -= 0.04;
+                } else this.cube.rotation.y += 0.04;
+                break;
+            case 'z':
+                if (rotateOpx.sign === '-') {
+                    this.cube.rotation.z -= 0.04;
+                } else this.cube.rotation.z += 0.04;
+                break;
         }
+        this.renderer.render(this.scene, this.camera);
+    }
+
+    // zoom in our out. why am I negating zoomIn? because it worky
+    zoomCamera(zoomIn: boolean): void {
+        const zoom = !zoomIn ? 1.1 : 0.9;
+        this.camera.position.z *= zoom;
+        this.camera.updateProjectionMatrix();
+        this.renderer.render(this.scene, this.camera);
     }
 }

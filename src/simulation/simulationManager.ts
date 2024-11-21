@@ -2,8 +2,13 @@ import { Scene3D } from './scene';
 import { DataManager } from '../util/dataManager';
 import { SelectedData } from '../types/types';
 
+let curScene: Scene3D | null = null;
+export function getCurScene() {
+    return curScene;
+}
+
 export class SimulationManager {
-    private scene: Scene3D | null = null;
+    public scene: Scene3D | null = null;
     private canvas: HTMLCanvasElement;
     private isBuilt = false;
     private isRunning = false;
@@ -22,8 +27,10 @@ export class SimulationManager {
     }
 
     private async buildSubstance(simulationData: SelectedData): Promise<void> {
+        console.log('building substance')
         this.scene = new Scene3D(this.canvas, simulationData);
         this.isBuilt = true;
+        curScene = this.scene;
     }
 
     private destroySubstance(): void {
