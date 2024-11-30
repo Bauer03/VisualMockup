@@ -4,7 +4,7 @@ export const createRightSideBody = (): HTMLElement => {
     container.id = 'right-side-container';
 
     const contInner = document.createElement('div');
-    contInner.className = 'rounded shadow';
+    contInner.className = 'rounded';
 
     const canvas = document.createElement('canvas');
     canvas.className = 'class="w-full h-full bg-gray-100 dark:bg-gray-700 rounded shadow';
