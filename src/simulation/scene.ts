@@ -46,6 +46,8 @@ export class Scene3D {
     private static readonly CANVAS_WIDTH = 400;
     private static readonly CANVAS_HEIGHT = 400;
 
+    private controls:OrbitControls;
+
     constructor(canvas: HTMLCanvasElement, selectedData: SelectedData) {
         this.selectedData = selectedData;
         this.modelData = selectedData.ModelSetupData ?? defaultModelData;
@@ -69,6 +71,8 @@ export class Scene3D {
         });
         this.renderer.setSize(Scene3D.CANVAS_WIDTH, Scene3D.CANVAS_HEIGHT, false);
 
+        this.controls = new OrbitControls(this.camera,this.renderer.domElement);
+
         const geometry = new THREE.BoxGeometry(2,2,2);
         const material = new THREE.MeshBasicMaterial({
             color: 0xF3F3F3,
@@ -91,6 +95,7 @@ export class Scene3D {
 
     private animate = () => {
         this._intervalID = requestAnimationFrame(this.animate);
+        this.controls.update();
 
         if(this.rotate) {
             this.cube.rotation.x += 0.002 * this.deltaScale;
