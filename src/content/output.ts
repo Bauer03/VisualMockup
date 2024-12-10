@@ -170,10 +170,10 @@ export const createOutputContent = (): HTMLElement => {
 
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', () => {
-        console.log('Copying data to notebook');
+        console.log('Attempting to copy data to notebook');
         const currentData = DataManager.collectCurrentOutputData();
         DataManager.saveOutputData(currentData);
-        dispatchEvent(new CustomEvent('copy-notebook'));
+        // dispatchEvent(new CustomEvent('copy-notebook'));
     });
 
     return content;
