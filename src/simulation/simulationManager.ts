@@ -21,7 +21,7 @@ export class SimulationManager {
         if (this.isBuilt) {
             this.destroySubstance();
         } else {
-            let data = DataManager.collectSelectedData();
+            let data = DataManager.collectAllData();
             await this.buildSubstance(data);
         }
     }

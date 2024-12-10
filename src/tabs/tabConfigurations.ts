@@ -30,13 +30,13 @@ export const bottomMenuTabs: Tab[] = [
     {
         id: 'output',
         label: 'Output',
-        content: createOutputContent(),
+        content: await createOutputContent(),
         materialIcon: "output"
     },
     {
         id: 'notebook',
         label: 'Notebook',
-        content: createNotebookContent(),
+        content: await createNotebookContent(),
         materialIcon: "edit_note"
     }
 ];
