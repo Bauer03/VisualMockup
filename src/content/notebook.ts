@@ -1,6 +1,5 @@
 // content/notebook.ts
 import { dbManager } from '../db/databaseManager';
-import { OutputData } from '../types/types';
 
 export const createNotebookContent = async (): Promise<HTMLElement> => {
     // Main container
@@ -23,6 +22,19 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     clearBtn.innerHTML = `
         <span>Clear All</span>
         <span class="material-icons text-sm">delete</span>
+    `;
+    const downloadBtn = document.createElement('button');
+    downloadBtn.className = `
+        px-2 py-1 text-xs shadow-sm rounded font-light
+        hover:bg-white dark:hover:bg-gray-800
+        bg-gray-100 dark:bg-gray-700
+        text-gray-800 dark:text-gray-200
+        border border-white dark:border-gray-600
+        transition-colors duration-200 items-center
+        flex gap-1 self-end`;
+    downloadBtn.innerHTML = `
+        <span>Download</span>
+        <span class="material-icons text-sm">download</span>
     `;
 
     // Create a scrollable container for outputs
@@ -146,7 +158,30 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         }
     };
 
-    content.appendChild(clearBtn);
+    // Add download handler for .txt file
+    downloadBtn.onclick = async () => {
+        const outputs = await dbManager.getAllOutputs();
+        const blob = new Blob([JSON.stringify(outputs)], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'virtualSubstanceOutputs.txt';
+        link.click();
+    };
+
+    const refreshNotebookListener = async (e: Event) => {
+        await loadOutputs();
+    };
+
+    document.addEventListener('output-copied', refreshNotebookListener);
+
+    // Add controls for clearing and downloading outputs
+    let notebookControls = document.createElement('div');
+    notebookControls.className = 'flex justify-end items-center gap-4';
+    notebookControls.appendChild(clearBtn);
+    notebookControls.appendChild(downloadBtn);
+    content.appendChild(notebookControls);
+
     scrollableContainer.appendChild(outputsContainer);
     content.appendChild(scrollableContainer);
 

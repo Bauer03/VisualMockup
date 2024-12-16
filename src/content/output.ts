@@ -174,9 +174,11 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
 
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', async () => {
-        console.log('Copying data to notebook');
         const currentData = DataManager.collectCurrentOutputData();
         await dbManager.addOutput(currentData);
+
+        const event = new Event('output-copied');
+        document.dispatchEvent(event);
     });
 
     return content;
