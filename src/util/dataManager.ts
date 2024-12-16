@@ -1,32 +1,17 @@
-import { OutputData, ModelSetupData, atomType, boundary, potentialModel, RunDynamicsData, ScriptData, simulationType, SelectedData } from '../types/types';
+import { OutputData } from '../types/types';
+import { dbManager } from '../db/databaseManager';
+import { 
+    ModelSetupData, 
+    RunDynamicsData, 
+    ScriptData, 
+    SelectedData, 
+    atomType, 
+    boundary, 
+    potentialModel,
+    simulationType
+} from '../types/types';
 
 export class DataManager {
-    private static readonly STORAGE_KEY = 'virtualSubstance_output'; // does uid matter?
-
-    // Save data to localStorage
-    static saveOutputData(data: OutputData): void {
-        console.log("saving data");
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
-        this.updateOutputDisplay(data);
-    }
-
-    // Get the data from localStorage
-    static loadOutputData(): OutputData | null {
-        const stored = localStorage.getItem(this.STORAGE_KEY);
-        if (!stored) {
-            console.log("loadOutputData(): No data in localStorage to load");
-            return null;
-        }
-        
-        const data = JSON.parse(stored) as OutputData;
-        // this.updateOutputDisplay(data);
-        return data;
-    }
-
-    static removeOutputData(): void {
-        localStorage.removeItem(this.STORAGE_KEY);
-    }
-
     static updateOutputDisplay(data: OutputData): void {
         // Update basic measurements
         this.updateElement('temperature-sample', data.basic.temperature.sample);
@@ -83,45 +68,6 @@ export class DataManager {
             }
         };
     }
-    
-    static collectSelectedData(): SelectedData {
-        return {
-            ModelSetupData: this.collectCurrentModelSetupData(),
-            RunDynamicsData: this.collectCurrentRunDynamicsData(),
-            ScriptData: this.collectCurrentScriptData()
-        };
-    }
-
-    static collectCurrentModelSetupData(): ModelSetupData {
-        return {
-            atomType: this.getElementValueAsString('AtomType') as atomType,
-            boundary: this.getElementValueAsString('Boundary') as boundary,
-            potentialModel: this.getElementValueAsString('PotentialModel') as potentialModel,
-            numAtoms: this.getElementValue('AtomCount'),
-            atomicMass: this.getElementValue('AtomicMass'),
-            potentialParams: {
-                sigma: this.getElementValue('sigma'),
-                epsilon: this.getElementValue('epsilon')
-            }
-        };
-    }
-
-    static collectCurrentRunDynamicsData(): RunDynamicsData {
-        return {
-            simulationType: this.getElementValueAsString('simulationType') as simulationType,
-            temperature: this.getElementValue('temperature'),
-            volume: this.getElementValue('volume'),
-            timeStep: this.getElementValue('timeStep'),
-            stepCount: this.getElementValue('stepCount'),
-            interval: this.getElementValue('interval')
-        };
-    }
-
-    static collectCurrentScriptData(): ScriptData {
-        return {
-            script: this.getElementValueAsString('script')
-        };
-    }
 
     private static getElementValue(id: string): number {
         const element = document.getElementById(id);
@@ -131,5 +77,81 @@ export class DataManager {
     private static getElementValueAsString(id: string): string {
         const element = document.getElementById(id);
         return element ? element.textContent || '' : '';
+    }
+
+    static collectCurrentModelSetupData(): ModelSetupData {
+        // Get select elements
+        const atomTypeSelect = document.getElementById('AtomType') as HTMLSelectElement;
+        const boundarySelect = document.getElementById('Boundary') as HTMLSelectElement;
+        const potentialModelSelect = document.getElementById('PotentialModel') as HTMLSelectElement;
+
+        // Get number inputs
+        const numAtomsInput = document.getElementById('AtomCount') as HTMLInputElement;
+        const atomicMassInput = document.getElementById('AtomicMass') as HTMLInputElement;
+
+        // Optional potential parameters
+        const sigmaInput = document.getElementById('sigma') as HTMLInputElement;
+        const epsilonInput = document.getElementById('epsilon') as HTMLInputElement;
+
+        // Build the ModelSetupData object
+        const modelSetupData: ModelSetupData = {
+            atomType: atomTypeSelect?.value as atomType || 'He',
+            boundary: boundarySelect?.value as boundary || 'Fixed Walls',
+            potentialModel: potentialModelSelect?.value as potentialModel || 'No Potential',
+            numAtoms: parseInt(numAtomsInput?.value || '0'),
+            atomicMass: parseFloat(atomicMassInput?.value || '0'),
+        };
+
+        // Only add potential parameters if they exist
+        if (sigmaInput && epsilonInput) {
+            modelSetupData.potentialParams = {
+                sigma: parseFloat(sigmaInput.value),
+                epsilon: parseFloat(epsilonInput.value)
+            };
+        }
+
+        return modelSetupData;
+    }
+
+    static collectCurrentRunDynamicsData(): RunDynamicsData {
+        // Get all input elements
+        const simulationTypeSelect = document.getElementById('SimulationType') as HTMLSelectElement;
+        const temperatureInput = document.getElementById('Temperature') as HTMLInputElement;
+        const volumeInput = document.getElementById('Volume') as HTMLInputElement;
+        const timeStepInput = document.getElementById('TimeStep') as HTMLInputElement;
+        const stepCountInput = document.getElementById('NumberOfSteps') as HTMLInputElement;
+        const intervalInput = document.getElementById('UpdateInterval') as HTMLInputElement;
+
+        return {
+            simulationType: simulationTypeSelect?.value as simulationType || 'Const-PT',
+            temperature: parseFloat(temperatureInput?.value || '0'),
+            volume: parseFloat(volumeInput?.value || '0'),
+            timeStep: parseFloat(timeStepInput?.value || '0'),
+            stepCount: parseInt(stepCountInput?.value || '0'),
+            interval: parseFloat(intervalInput?.value || '0')
+        };
+    }
+
+    static collectCurrentScriptData(): ScriptData {
+        // Assuming there's a textarea or input for scripts
+        const scriptInput = document.getElementById('script') as HTMLTextAreaElement;
+        
+        return {
+            script: scriptInput?.value || ''
+        };
+    }
+
+    static collectAllData(): SelectedData {
+        return {
+            ModelSetupData: this.collectCurrentModelSetupData(),
+            RunDynamicsData: this.collectCurrentRunDynamicsData(),
+            ScriptData: this.collectCurrentScriptData()
+        };
+    }
+
+    // Helper method to validate numeric input
+    private static validateNumericInput(value: string, defaultValue: number = 0): number {
+        const parsed = parseFloat(value);
+        return isNaN(parsed) ? defaultValue : parsed;
     }
 }

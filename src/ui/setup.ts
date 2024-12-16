@@ -1,4 +1,5 @@
 import { SimulationManager } from '../simulation/simulationManager';
+import { DataManager } from '../util/dataManager';
 import { wait } from '../util/wait';
 
 export function setupUI(simulation: SimulationManager) {
@@ -6,12 +7,13 @@ export function setupUI(simulation: SimulationManager) {
     const runButton = document.getElementById('run-simulation-button') as HTMLButtonElement;
 
     if (!buildButton || !runButton) {
-        console.error('Simulation buttons not found');
+        console.error('Simulation button(s?) not found');
         return;
     }
 
     buildButton.addEventListener('click', async () => {
         try {
+            // DataManager.collectAllData(); this is alreaddy being called whoopsies
             await simulation.toggleBuild();
             updateButtons(buildButton, runButton, simulation);
             await wait(200);

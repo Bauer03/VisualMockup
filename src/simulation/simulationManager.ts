@@ -17,11 +17,14 @@ export class SimulationManager {
         this.canvas = canvas;
     }
 
+    // Collects all user-selected data at this point (from UI) and builds the substance based on that data. 
+    // If none is selected, it will build a default substance. If only some data is selected, it will build with
+    // whatever the user has selected, and then use the default values for the rest.
     async toggleBuild(): Promise<void> {
         if (this.isBuilt) {
             this.destroySubstance();
         } else {
-            let data = DataManager.collectSelectedData();
+            let data = DataManager.collectAllData();
             await this.buildSubstance(data);
         }
     }

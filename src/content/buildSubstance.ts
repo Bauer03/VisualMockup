@@ -1,11 +1,9 @@
-import { update } from "three/examples/jsm/libs/tween.module.js";
 import { getCurScene } from "../simulation/simulationManager";
+import { DataManager } from "../util/dataManager";
 
 export const buildSubstanceSection = (): HTMLElement => {
     const container = document.createElement('div');
-    // container.className = 'flex justify-between items-center content-center gap-2';
     container.className = 'flex justify-between items-center content-center gap-4 bg-gray-100 dark:bg-gray-700 rounded p-4 shadow h-full';
-    
     
     const buildSubstanceButton = document.createElement('button');
     buildSubstanceButton.id = 'build-substance-button';
@@ -68,6 +66,7 @@ export const buildSubstanceSection = (): HTMLElement => {
         sign?: '+' | '-';
     };
 
+    // Creates buttons for rotation and zooming
     const createControlButton = (params: ControlParams) => {
         const button = document.createElement('button');
         button.className = controlButtonClass;
@@ -79,7 +78,6 @@ export const buildSubstanceSection = (): HTMLElement => {
                 console.log("Substance may not be built yet.");
                 return;
             }
-
             if (params.action === 'rotate') {
                 console.log(`substance being rotated to face ${params.icon.replace('keyboard_arrow_', '')}`);
                 curScene.rotateSubstance({ rotationAxis: params.axis!, sign: params.sign! });

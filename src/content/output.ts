@@ -1,8 +1,11 @@
+import { dbManager } from '../db/databaseManager';
 import { DataManager } from '../util/dataManager';
 
-export const createOutputContent = (): HTMLElement => {
+export const createOutputContent = async (): Promise<HTMLElement> => {
     const content = document.createElement("div");
     content.className = "grid px-3 gap-2 min-h-[165px] content-start";
+
+    await dbManager.init();
 
     // header with tabs and copy button 
     const headerHtml = `
@@ -163,17 +166,19 @@ export const createOutputContent = (): HTMLElement => {
         timeContent.classList.remove('hidden');
     });
 
-    const savedData = DataManager.loadOutputData();
-    if(savedData) {
-        DataManager.updateOutputDisplay(savedData);
+    const outputs = await dbManager.getAllOutputs();
+    if (outputs.length > 0) {
+        const latestOutput = outputs[outputs.length - 1];
+        DataManager.updateOutputDisplay(latestOutput);
     }
 
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
-    copyButton.addEventListener('click', () => {
-        console.log('Copying data to notebook');
+    copyButton.addEventListener('click', async () => {
         const currentData = DataManager.collectCurrentOutputData();
-        DataManager.saveOutputData(currentData);
-        dispatchEvent(new CustomEvent('copy-notebook'));
+        await dbManager.addOutput(currentData);
+
+        const event = new Event('output-copied');
+        document.dispatchEvent(event);
     });
 
     return content;
