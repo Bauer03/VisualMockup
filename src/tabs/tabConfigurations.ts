@@ -26,12 +26,13 @@ export const topMenuTabs: Tab[] = [
     },
 ];
 
-// Initialize with empty content, then update asynchronously
-export let bottomMenuTabs: Tab[] = [];
-
-// Initialize the tabs
-Promise.all([createOutputContent(), createNotebookContent()]).then(([outputContent, notebookContent]) => {
-    bottomMenuTabs = [
+export const getBottomMenuTabs = async (): Promise<Tab[]> => {
+    const [outputContent, notebookContent] = await Promise.all([
+        createOutputContent(),
+        createNotebookContent()
+    ]);
+    
+    return [
         {
             id: 'output',
             label: 'Output',
@@ -45,4 +46,4 @@ Promise.all([createOutputContent(), createNotebookContent()]).then(([outputConte
             materialIcon: "edit_note"
         }
     ];
-});
+};
