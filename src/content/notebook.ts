@@ -64,7 +64,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
 
     const dialogContent = document.createElement('div');
     dialogContent.className = `
-        bg-white dark:bg-gray-800 
+        bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200
         p-6 rounded-lg shadow-xl 
         max-w-2xl w-full mx-4
         max-h-[80vh] overflow-y-auto
@@ -77,7 +77,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         dialogContent.innerHTML = `
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-medium">Output ${index} Details</h2>
-                <button class="material-icons text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <button class="material-icons text-gray-300 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                     close
                 </button>
             </div>
@@ -124,7 +124,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
             element.className = `
                 bg-white dark:bg-gray-800 p-2 rounded shadow
                 flex justify-between items-center
-                cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700
+                cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-600
                 transition-colors duration-200
             `;
             

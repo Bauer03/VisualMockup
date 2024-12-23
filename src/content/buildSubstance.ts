@@ -29,7 +29,7 @@ export const buildSubstanceSection = (): HTMLElement => {
         hover:bg-blue-300 dark:hover:bg-blue-700
         text-gray-800 dark:text-gray-200
         transition-colors duration-200
-        disabled:bg-gray-300 dark:disabled:bg-gray-700
+        disabled:bg-gray-300 dark:disabled:bg-gray-600
         disabled:text-gray-500 dark:disabled:text-gray-400
         disabled:cursor-not-allowed
     `;
