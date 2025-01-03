@@ -1,4 +1,4 @@
-import { OutputData } from '../types/types';
+import { OutputData, SimulationRun } from '../types/types';
 import { dbManager } from '../db/databaseManager';
 import { 
     ModelSetupData, 
@@ -153,5 +153,63 @@ export class DataManager {
     private static validateNumericInput(value: string, defaultValue: number = 0): number {
         const parsed = parseFloat(value);
         return isNaN(parsed) ? defaultValue : parsed;
+    }
+
+    static async saveSimulationRun(outputData: OutputData, setupData: ModelSetupData, runData: RunDynamicsData): Promise<void> {
+        const run: SimulationRun = {
+            runNumber: Date.now(),
+            timestamp: new Date().toISOString(),
+            outputData,
+            setupData,
+            runData
+        };
+        await dbManager.addOutput(run);
+        document.dispatchEvent(new Event('output-copied'));
+    }
+
+    static exportSimulationData(data: SimulationRun[]): string {
+        const headers = [
+            'Run Number',
+            'Timestamp',
+            'Atom Type',
+            'Number of Atoms',
+            'Boundary Type',
+            'Simulation Type',
+            'Temperature (K)',
+            'Avg Temperature (K)',
+            'Pressure (atm)',
+            'Avg Pressure (atm)',
+            'Volume (L/mol)',
+            'Avg Volume (L/mol)',
+            'Total Energy (J/mol)',
+            'Avg Total Energy (J/mol)',
+            'Kinetic Energy (J/mol)',
+            'Avg Kinetic Energy (J/mol)',
+            'Potential Energy (J/mol)',
+            'Avg Potential Energy (J/mol)'
+        ].join(',');
+
+        const rows = data.map(run => [
+            run.runNumber,
+            run.timestamp,
+            run.setupData.atomType,
+            run.setupData.numAtoms,
+            run.setupData.boundary,
+            run.runData.simulationType,
+            run.outputData.basic.temperature.sample,
+            run.outputData.basic.temperature.average,
+            run.outputData.basic.pressure.sample,
+            run.outputData.basic.pressure.average,
+            run.outputData.basic.volume.sample,
+            run.outputData.basic.volume.average,
+            run.outputData.energy.total.sample,
+            run.outputData.energy.total.average,
+            run.outputData.energy.kinetic.sample,
+            run.outputData.energy.kinetic.average,
+            run.outputData.energy.potential.sample,
+            run.outputData.energy.potential.average
+        ].join(','));
+
+        return [headers, ...rows].join('\n');
     }
 }

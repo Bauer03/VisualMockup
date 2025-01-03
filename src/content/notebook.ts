@@ -1,5 +1,6 @@
 // content/notebook.ts
 import { dbManager } from '../db/databaseManager';
+import { DataManager } from '../util/dataManager';
 
 export const createNotebookContent = async (): Promise<HTMLElement> => {
     // Main container
@@ -158,14 +159,14 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         }
     };
 
-    // Add download handler for .txt file
     downloadBtn.onclick = async () => {
         const outputs = await dbManager.getAllOutputs();
-        const blob = new Blob([JSON.stringify(outputs)], { type: 'text/plain' });
+        const csvContent = DataManager.exportSimulationData(outputs);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'virtualSubstanceOutputs.txt';
+        link.download = 'simulationResults.csv';
         link.click();
     };
 

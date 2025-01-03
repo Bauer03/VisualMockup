@@ -80,3 +80,11 @@ export type rotateOpx = {
     rotationAxis: rotationAxis;
     sign: sign;
 }
+
+export interface SimulationRun {
+    runNumber: number;
+    timestamp: string;
+    outputData: OutputData;
+    setupData: ModelSetupData;
+    runData: RunDynamicsData;
+}

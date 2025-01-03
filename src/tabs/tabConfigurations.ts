@@ -5,28 +5,32 @@ import { createNotebookContent } from '../content/notebook';
 import { createRunDynamicsContent } from '../content/runDynamics';
 import { createCommandScriptsContent } from '../content/commandScripts';
 
-export const topMenuTabs: Tab[] = [
-    {
-        id: 'model-setup',
-        label: 'Model Setup',
-        content: createModelSetupContent(),
-        materialIcon: "settings"
-    },
-    {
-        id: 'run-dynamics',
-        label: 'Run Dynamics',
-        content: createRunDynamicsContent(),
-        materialIcon: "play_arrow"
-    },
-    {
-        id: 'command-scripts',
-        label: 'Scripts',
-        content: createCommandScriptsContent(),
-        materialIcon: "code"
-    },
-];
+export async function getTopMenuTabs(): Promise<Tab[]> {
+    const commandScriptsContent = await createCommandScriptsContent();
+    
+    return [
+        {
+            id: 'model-setup',
+            label: 'Model Setup',
+            content: createModelSetupContent(),
+            materialIcon: "settings"
+        },
+        {
+            id: 'run-dynamics',
+            label: 'Run Dynamics',
+            content: createRunDynamicsContent(),
+            materialIcon: "play_arrow"
+        },
+        {
+            id: 'command-scripts',
+            label: 'Scripts',
+            content: commandScriptsContent,
+            materialIcon: "code"
+        },
+    ];
+}
 
-export const getBottomMenuTabs = async (): Promise<Tab[]> => {
+export async function getBottomMenuTabs(): Promise<Tab[]> {
     const [outputContent, notebookContent] = await Promise.all([
         createOutputContent(),
         createNotebookContent()
@@ -46,4 +50,4 @@ export const getBottomMenuTabs = async (): Promise<Tab[]> => {
             materialIcon: "edit_note"
         }
     ];
-};
+}
