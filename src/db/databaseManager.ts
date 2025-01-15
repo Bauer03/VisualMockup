@@ -2,7 +2,7 @@
 export class DatabaseManager {
     private static DB_NAME = 'virtualSubstanceDB';
     private static STORE_NAME = 'outputs';
-    private static VERSION = 1;
+    private static VERSION = 2;
     private db: IDBDatabase | null = null;
 
     // Initialize the database

@@ -31,6 +31,7 @@ export async function getTopMenuTabs(): Promise<Tab[]> {
 }
 
 export async function getBottomMenuTabs(): Promise<Tab[]> {
+    // console.log('getting bottom menu tabs');
     const [outputContent, notebookContent] = await Promise.all([
         createOutputContent(),
         createNotebookContent()

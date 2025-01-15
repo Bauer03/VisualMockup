@@ -1,5 +1,5 @@
 import { TabSystem } from './tabs/tabSystem';
-import { topMenuTabs, getBottomMenuTabs } from './tabs/tabConfigurations';
+import { getTopMenuTabs, getBottomMenuTabs } from './tabs/tabConfigurations';
 import { setupThemeToggle } from './theme/themeToggle';
 import { buildSubstanceSection } from './content/buildSubstance';
 import { SimulationManager } from './simulation/simulationManager';
@@ -12,14 +12,15 @@ import { createRightSideBody } from './content/menuRight';
 async function initializeUI() {
     const container = document.getElementById('container');
     if (!container) {
-        console.error('Container element not found');
+        console.error('Container element in which to append UI not found');
         return;
     }
     container.appendChild(createThemeButton());
     container.appendChild(createLeftSideBody());
     container.appendChild(createRightSideBody());
 
-    const topMenu = new TabSystem('top-menu-container', topMenuTabs);
+    const topTabs = await getTopMenuTabs();
+    const topMenu = new TabSystem('top-menu-container', topTabs);
     const bottomTabs = await getBottomMenuTabs();
     const bottomMenu = new TabSystem('bottom-menu-container', bottomTabs);
 

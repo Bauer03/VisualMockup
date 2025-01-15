@@ -10,7 +10,7 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
         <label class="text-sm font-medium">Number of Runs</label>
         <input type="number" id="runCount" min="1" max="100" value="1" 
                class="px-2 py-1 rounded border dark:bg-gray-700 dark:border-gray-600">
-        <div class="text-xs text-gray-500">Maximum 100 runs at a time</div>
+        <div class="text-xs text-gray-500">Maximum 500 runs at a time</div>
     `;
 
     const runButton = document.createElement('button');

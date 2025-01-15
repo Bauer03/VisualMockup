@@ -41,7 +41,7 @@ export const createModelSetupContent = (): HTMLElement => {
     </div>
 
     <div class="flex gap-4 items-center justify-between" id="model-setup-inputs">
-        <div class="grid gap-2 ps-0 px-4 py-2">
+        <div class="grid gap-2 ps-0 px-2 py-2">
             <div class="flex gap-2 justify-between">
                 <label for="AtomCount" class="flex justify-between items-center">
                     <span class="block text-sm font-medium text-gray-700 dark:text-gray-200">Num. of atoms</span>
@@ -49,7 +49,7 @@ export const createModelSetupContent = (): HTMLElement => {
                 <input type="number" 
                     id="AtomCount" 
                     class="block w-20 py-2 px-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                    placeholder="10">
+                    placeholder="1">
             </div>
 
             <div class="flex gap-2 justify-between">
@@ -59,11 +59,33 @@ export const createModelSetupContent = (): HTMLElement => {
                 <input type="number" 
                     id="AtomicMass" 
                     class="block w-20 py-2 px-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" 
-                    placeholder="4">
+                    placeholder="4.002602">
             </div>
         </div>
     </div>
     `;
+
+    let atomCount = formContent.querySelector("#AtomCount") as HTMLInputElement;
+    let atomType = formContent.querySelector("#AtomType") as HTMLSelectElement;
+    let atomicMass = formContent.querySelector("#AtomicMass") as HTMLInputElement;
+
+    atomType.addEventListener("change", (event) => {
+        const atomType = (event.target as HTMLSelectElement).value;
+        // based on atom type, set atomicMass.
+        if(atomType === 'He') {
+            atomicMass.value = "4.002602";
+        } else if(atomType === 'Ne') {
+            atomicMass.value = "20.1797";
+        } else if(atomType === 'Ar') {
+            atomicMass.value = "39.948";
+        } else if(atomType === 'Kr') {
+            atomicMass.value = "83.798";
+        } else if(atomType === 'Xe') {
+            atomicMass.value = "131.293";
+        } else if(atomType === 'Rn') {
+            atomicMass.value = "222";
+        }
+    });
 
     let pModelDropdown = formContent.querySelector("#PotentialModel") as HTMLSelectElement;
     pModelDropdown.onchange = (event) => {

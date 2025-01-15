@@ -14,12 +14,30 @@ import {
 export class DataManager {
     static updateOutputDisplay(data: OutputData): void {
         // Update basic measurements
-        this.updateElement('temperature-sample', data.basic.temperature.sample);
-        this.updateElement('temperature-average', data.basic.temperature.average);
-        this.updateElement('pressure-sample', data.basic.pressure.sample);
-        this.updateElement('pressure-average', data.basic.pressure.average);
-        this.updateElement('volume-sample', data.basic.volume.sample);
-        this.updateElement('volume-average', data.basic.volume.average);
+
+        // check data.basic exists
+        if(data.basic === undefined) {
+            console.warn('data.basic is undefined');
+            return;
+        }
+        if(data.basic.temperature.sample !== undefined) {
+            this.updateElement('temperature-sample', data.basic.temperature.sample);
+        }
+        if(data.basic.temperature.average !== undefined) {
+            this.updateElement('temperature-average', data.basic.temperature.average);
+        }
+        if(data.basic.pressure.sample !== undefined) {
+            this.updateElement('pressure-sample', data.basic.pressure.sample);
+        }
+        if(data.basic.pressure.average !== undefined) {
+            this.updateElement('pressure-average', data.basic.pressure.average);
+        }
+        if(data.basic.volume.sample !== undefined) {
+            this.updateElement('volume-sample', data.basic.volume.sample);
+        }
+        if(data.basic.volume.average !== undefined) {
+            this.updateElement('volume-average', data.basic.volume.average);
+        }
 
         // Update energy measurements
         this.updateElement('total-energy-sample', data.energy.total.sample);

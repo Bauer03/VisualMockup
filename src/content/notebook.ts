@@ -160,7 +160,12 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     };
 
     downloadBtn.onclick = async () => {
-        const outputs = await dbManager.getAllOutputs();
+        // first check if there are any outputs
+        const outputs = await dbManager.getAllOutputs(); 
+        if(outputs.length === 0) {
+            alert("There's nothing to download right now! Try copying your simulation results to the notebook first.");
+            return;
+        }
         const csvContent = DataManager.exportSimulationData(outputs);
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);

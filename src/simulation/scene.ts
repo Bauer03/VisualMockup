@@ -57,7 +57,7 @@ export class Scene3D {
         this.scene = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(
-            75, 
+            50, 
             Scene3D.CANVAS_WIDTH / Scene3D.CANVAS_HEIGHT, 
             0.1, 
             1000
