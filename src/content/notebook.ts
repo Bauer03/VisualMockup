@@ -1,6 +1,7 @@
 // content/notebook.ts
 import { dbManager } from '../db/databaseManager';
 import { DataManager } from '../util/dataManager';
+import { SimulationRun } from '../types/types';
 
 export const createNotebookContent = async (): Promise<HTMLElement> => {
     // Main container
@@ -73,7 +74,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     dialog.appendChild(dialogContent);
     document.body.appendChild(dialog);
 
-    // Function to show output details in dialog
+    // Function to create dialog popup with output details
     const showOutputDetails = (output: any, index: number) => {
         dialogContent.innerHTML = `
             <div class="flex justify-between items-center mb-4">
@@ -115,7 +116,9 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         dialog.classList.remove('hidden');
     };
 
-    // Load and display all outputs
+    /**
+     * Loads and displays all outputs from the database
+     */
     const loadOutputs = async () => {
         const outputs = await dbManager.getAllOutputs();
         outputsContainer.innerHTML = '';
@@ -131,14 +134,14 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
             
             const info = document.createElement('div');
             info.className = 'text-sm flex-1';
-            info.textContent = `Output ${index} - ${new Date(output.timestamp).toLocaleString()}`;
+            info.textContent = `Saved Output - ${new Date(output.timestamp).toLocaleString()}`;
             
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'material-icons text-sm text-gray-500 hover:text-red-500 transition-colors duration-200 ml-2';
             deleteBtn.textContent = 'delete';
             deleteBtn.onclick = async (e) => {
                 e.stopPropagation();  // Prevent dialog from opening
-                await dbManager.deleteOutput(output.id);
+                await dbManager.deleteOutput(output.uid);
                 await loadOutputs();
             };
             
@@ -151,7 +154,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         });
     };
 
-    // Add clear all handler
+    // clears all outputs from indexeddb
     clearBtn.onclick = async () => {
         if (confirm('Are you sure you want to clear all outputs?')) {
             await dbManager.clearAllOutputs();
@@ -160,12 +163,13 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     };
 
     downloadBtn.onclick = async () => {
-        // first check if there are any outputs
-        const outputs = await dbManager.getAllOutputs(); 
-        if(outputs.length === 0) {
-            alert("There's nothing to download right now! Try copying your simulation results to the notebook first.");
-            return;
-        }
+        // first, collect the outputs from the notebook. then, export them to csv and download
+        let outputs: SimulationRun[] = [];
+        dbManager.getAllOutputs().then(data => outputs = data);
+        // if(outputs.length === 0) {
+        //     alert("There's nothing to download right now! Try copying your simulation results to the notebook first.");
+        //     return;
+        // }
         const csvContent = DataManager.exportSimulationData(outputs);
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);

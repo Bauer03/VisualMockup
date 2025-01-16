@@ -37,6 +37,12 @@ export interface OutputData {
     };
 }
 
+export interface InputData {
+    ModelSetupData: ModelSetupData,
+    RunDynamicsData: RunDynamicsData,
+    ScriptData: ScriptData
+}
+
 // types here make sure i'm not passing in wrong data & for autocompletion
 export type atomType = "He" | "Ne" | "Ar" | "Kr" | "Xe" | "User";
 export type boundary = "Fixed Walls" | "Periodic";
@@ -82,9 +88,9 @@ export type rotateOpx = {
 }
 
 export interface SimulationRun {
+    uid: number;
     runNumber: number;
     timestamp: string;
     outputData: OutputData;
-    setupData: ModelSetupData;
-    runData: RunDynamicsData;
+    inputData: InputData;
 }

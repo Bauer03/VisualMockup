@@ -1,8 +1,10 @@
+import { SimulationRun } from "../types/types";
+
 // db/databaseManager.ts
 export class DatabaseManager {
     private static DB_NAME = 'virtualSubstanceDB';
     private static STORE_NAME = 'outputs';
-    private static VERSION = 2;
+    private static VERSION = 3.1;
     private db: IDBDatabase | null = null;
 
     // Initialize the database
@@ -23,7 +25,7 @@ export class DatabaseManager {
                 if (!db.objectStoreNames.contains(DatabaseManager.STORE_NAME)) {
                     db.createObjectStore(DatabaseManager.STORE_NAME, { 
                         keyPath: 'id',
-                        autoIncrement: true 
+                        autoIncrement: true
                     });
                 }
             };
@@ -31,8 +33,14 @@ export class DatabaseManager {
     }
 
     // Add new output data
-    async addOutput(data: any): Promise<number> {
+    async addOutput(data: SimulationRun): Promise<number> {
         if (!this.db) throw new Error('Database not initialized');
+
+        // validate data to ensure it's a valid SimulationRun
+        if(!data.uid || !data.runNumber || !data.timestamp || !data.outputData || !data.inputData) {
+            alert('Invalid data');
+            throw new Error('Invalid data');
+        }
 
         return new Promise((resolve, reject) => {
             const transaction = this.db!.transaction([DatabaseManager.STORE_NAME], 'readwrite');
@@ -46,8 +54,10 @@ export class DatabaseManager {
         });
     }
 
-    // Get all outputs
-    async getAllOutputs(): Promise<any[]> {
+    /**
+     * Get all outputs from the database
+     */
+    async getAllOutputs(): Promise<SimulationRun[]> {
         if (!this.db) throw new Error('Database not initialized');
 
         return new Promise((resolve, reject) => {

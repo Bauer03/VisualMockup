@@ -13,7 +13,8 @@ export function setupUI(simulation: SimulationManager) {
 
     buildButton.addEventListener('click', async () => {
         try {
-            // DataManager.collectAllData(); this is alreaddy being called whoopsies
+            let curSelectedData = DataManager.collectSelectedData();
+            // todo: build substance using selected data
             await simulation.toggleBuild();
             updateButtons(buildButton, runButton, simulation);
             await wait(200);

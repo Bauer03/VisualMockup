@@ -32,11 +32,10 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
             for (let i = 0; i < count; i++) {
                 progressDiv.textContent = `Running simulation ${i + 1} of ${count}...`;
                 
-                const setupData = DataManager.collectCurrentModelSetupData();
-                const runData = DataManager.collectCurrentRunDynamicsData();
+                const inputData = DataManager.collectSelectedData();
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                const outputData = DataManager.collectCurrentOutputData();
-                await DataManager.saveSimulationRun(outputData, setupData, runData);
+                const outputData = DataManager.collectOutputData();
+                await DataManager.getCurrentSimulationRun(outputData, inputData, true);
             }
             progressDiv.textContent = `Completed ${count} simulations`;
         } catch (error) {
@@ -44,7 +43,7 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
         } finally {
             runButton.disabled = false;
             runButton.textContent = 'Run Simulations';
-            setTimeout(() => progressDiv.classList.add('hidden'), 3000);
+            setTimeout(() => progressDiv.classList.add('hidden'), 2000);
         }
     };
 

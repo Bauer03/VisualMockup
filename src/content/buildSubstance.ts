@@ -1,5 +1,4 @@
 import { getCurScene } from "../simulation/simulationManager";
-import { DataManager } from "../util/dataManager";
 
 export const buildSubstanceSection = (): HTMLElement => {
     const container = document.createElement('div');

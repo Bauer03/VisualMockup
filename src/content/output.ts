@@ -1,3 +1,4 @@
+import { SimulationRun } from '../types/types';
 import { dbManager } from '../db/databaseManager';
 import { DataManager } from '../util/dataManager';
 
@@ -166,19 +167,29 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
         timeContent.classList.remove('hidden');
     });
 
-    const outputs = await dbManager.getAllOutputs();
+    let outputs: SimulationRun[] = [];
+    await dbManager.getAllOutputs().then(data => outputs = data);
     if (outputs.length > 0) {
         const latestOutput = outputs[outputs.length - 1];
-        DataManager.updateOutputDisplay(latestOutput);
+        DataManager.updateOutputDisplay(latestOutput.outputData);
     }
 
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', async () => {
-        const currentData = DataManager.collectCurrentOutputData();
-        await dbManager.addOutput(currentData);
-
-        const event = new Event('output-copied');
-        document.dispatchEvent(event);
+        try {
+            const currentData = await DataManager.getCurrentSimulationRun(
+                DataManager.collectOutputData(),
+                DataManager.collectSelectedData()
+            );
+            
+            if (currentData) {
+                // await dbManager.addOutput(currentData); implemented in datamanager
+                const event = new Event('output-copied');
+                document.dispatchEvent(event);
+            }
+        } catch (error) {
+            console.error('Error handling copy to notebook:', error);
+        }
     });
 
     return content;

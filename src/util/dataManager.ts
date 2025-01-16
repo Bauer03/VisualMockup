@@ -1,4 +1,4 @@
-import { OutputData, SimulationRun } from '../types/types';
+import { OutputData, SimulationRun, InputData } from '../types/types';
 import { dbManager } from '../db/databaseManager';
 import { 
     ModelSetupData, 
@@ -8,13 +8,13 @@ import {
     atomType, 
     boundary, 
     potentialModel,
-    simulationType
+    simulationType,
 } from '../types/types';
+import { log } from 'three/webgpu';
 
 export class DataManager {
     static updateOutputDisplay(data: OutputData): void {
         // Update basic measurements
-
         // check data.basic exists
         if(data.basic === undefined) {
             console.warn('data.basic is undefined');
@@ -48,13 +48,18 @@ export class DataManager {
         this.updateElement('potential-energy-average', data.energy.potential.average);
     }
 
+    /**
+     * Updates the text content of an element with the given id using the given value
+     */
     private static updateElement(id: string, value: number): void {
         const element = document.getElementById(id);
         if (element) element.textContent = value.toString();
     }
 
-    // collect current output data from UI
-    static collectCurrentOutputData(): OutputData {
+    /**
+     * Searches the DOM for the current output data and returns it as an object
+     */
+    static collectOutputData(): OutputData {
         return {
             basic: {
                 temperature: {
@@ -87,15 +92,23 @@ export class DataManager {
         };
     }
 
+    static collectSelectedData(): SelectedData {
+        return {
+            ModelSetupData: this.collectCurrentModelSetupData(),
+            RunDynamicsData: this.collectCurrentRunDynamicsData(),
+            ScriptData: this.collectCurrentScriptData()
+        };
+    }
+
     private static getElementValue(id: string): number {
         const element = document.getElementById(id);
         return element ? parseFloat(element.textContent || '0') : 0;
     }
 
-    private static getElementValueAsString(id: string): string {
-        const element = document.getElementById(id);
-        return element ? element.textContent || '' : '';
-    }
+    // private static getElementValueAsString(id: string): string {
+    //     const element = document.getElementById(id);
+    //     return element ? element.textContent || '' : '';
+    // }
 
     static collectCurrentModelSetupData(): ModelSetupData {
         // Get select elements
@@ -159,33 +172,27 @@ export class DataManager {
         };
     }
 
-    static collectAllData(): SelectedData {
-        return {
-            ModelSetupData: this.collectCurrentModelSetupData(),
-            RunDynamicsData: this.collectCurrentRunDynamicsData(),
-            ScriptData: this.collectCurrentScriptData()
-        };
-    }
+    // private static validateNumericInput(value: string, defaultValue: number = 0): number {
+    //     const parsed = parseFloat(value);
+    //     return isNaN(parsed) ? defaultValue : parsed;
+    // }
 
-    // Helper method to validate numeric input
-    private static validateNumericInput(value: string, defaultValue: number = 0): number {
-        const parsed = parseFloat(value);
-        return isNaN(parsed) ? defaultValue : parsed;
-    }
-
-    static async saveSimulationRun(outputData: OutputData, setupData: ModelSetupData, runData: RunDynamicsData): Promise<void> {
+    static async getCurrentSimulationRun(outputData: OutputData, inputData: InputData, saveToDB: boolean = true): Promise<SimulationRun> {
         const run: SimulationRun = {
+            uid: (Date.now()*17),
             runNumber: Date.now(),
             timestamp: new Date().toISOString(),
             outputData,
-            setupData,
-            runData
+            inputData
         };
-        await dbManager.addOutput(run);
-        document.dispatchEvent(new Event('output-copied'));
+        if(saveToDB) {
+            await dbManager.addOutput(run);
+        }
+        return run;
     }
 
     static exportSimulationData(data: SimulationRun[]): string {
+        console.log(data);
         const headers = [
             'Run Number',
             'Timestamp',
@@ -210,10 +217,10 @@ export class DataManager {
         const rows = data.map(run => [
             run.runNumber,
             run.timestamp,
-            run.setupData.atomType,
-            run.setupData.numAtoms,
-            run.setupData.boundary,
-            run.runData.simulationType,
+            run.inputData.ModelSetupData.atomType,
+            run.inputData.ModelSetupData.numAtoms,
+            run.inputData.ModelSetupData.boundary,
+            run.inputData.RunDynamicsData.simulationType,
             run.outputData.basic.temperature.sample,
             run.outputData.basic.temperature.average,
             run.outputData.basic.pressure.sample,

@@ -73,17 +73,28 @@ export const createModelSetupContent = (): HTMLElement => {
         const atomType = (event.target as HTMLSelectElement).value;
         // based on atom type, set atomicMass.
         if(atomType === 'He') {
-            atomicMass.value = "4.002602";
+            if(atomicMass.value === "") {
+                atomicMass.placeholder = "4.002602";
+            } else atomicMass.value = "4.002602";
         } else if(atomType === 'Ne') {
-            atomicMass.value = "20.1797";
+            if(atomicMass.value === "") {
+                atomicMass.placeholder = "20.1797";
+            } else atomicMass.value = "20.1797";
         } else if(atomType === 'Ar') {
-            atomicMass.value = "39.948";
+            if(atomicMass.value === "") {
+                atomicMass.placeholder = "39.948";
+            } else atomicMass.value = "39.948"; 
         } else if(atomType === 'Kr') {
-            atomicMass.value = "83.798";
+            if(atomicMass.value === "") {
+                atomicMass.placeholder = "83.798";
+            } else atomicMass.value = "83.798";
         } else if(atomType === 'Xe') {
-            atomicMass.value = "131.293";
-        } else if(atomType === 'Rn') {
-            atomicMass.value = "222";
+            if(atomicMass.value === "") {
+                atomicMass.placeholder = "131.293";
+            } else atomicMass.value = "131.293";
+        } else if(atomType === 'Rn') {  
+            if(atomicMass.value === "") atomicMass.placeholder = "222"; 
+            else atomicMass.value = "222";
         }
     });
 
@@ -97,7 +108,7 @@ export const createModelSetupContent = (): HTMLElement => {
             if(formContent.querySelector("#potential-parameters")) {
                 formContent.querySelector("#potential-parameters")?.remove();
             }
-            document.getElementById('model-setup-inputs')?.appendChild(createPotentialParameters());    
+            document.getElementById('model-setup-inputs')?.appendChild(createPotentialParameters(potentialModel));    
         }
     };
 
