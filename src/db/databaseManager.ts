@@ -3,7 +3,7 @@ import { SimulationRun } from "../types/types";
 export class DatabaseManager {
     private static DB_NAME = 'virtualSubstanceDB';
     private static STORE_NAME = 'outputs';
-    private static VERSION = 3.1;
+    private static VERSION = 3.2;
     private db: IDBDatabase | null = null;
 
     /**
@@ -61,7 +61,7 @@ export class DatabaseManager {
     }
 
     /**
-     * Gets all outputs from the database
+     * Gets all simulationRuns from the database
      */
     async getAllOutputs(): Promise<SimulationRun[]> {
         if (!this.db) throw new Error('Database not initialized');

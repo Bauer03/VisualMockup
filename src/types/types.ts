@@ -62,23 +62,14 @@ export interface ModelSetupData {
 export type simulationType = "Const-PT" | "Const-VT";
 export interface RunDynamicsData {
     simulationType: simulationType;
-    temperature: number;
-    volume: number;
+    initialTemperature: number;
+    initialVolume: number;
     timeStep: number;
     stepCount: number;
     interval: number;
 }
 
-export type scriptData = string;
-export interface ScriptData {
-    script: scriptData;
-}
-
-export interface SelectedData {
-    ModelSetupData: ModelSetupData,
-    RunDynamicsData: RunDynamicsData,
-    ScriptData:ScriptData;
-};
+export type ScriptData = number;
 
 type sign = "+" | "-";
 type rotationAxis = "x" | "y" | "z";

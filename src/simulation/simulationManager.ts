@@ -1,6 +1,6 @@
 import { Scene3D } from './scene';
 import { DataManager } from '../util/dataManager';
-import { SelectedData } from '../types/types';
+import { InputData } from '../types/types';
 
 let curScene: Scene3D | null = null;
 export function getCurScene() {
@@ -29,7 +29,7 @@ export class SimulationManager {
         }
     }
 
-    private async buildSubstance(simulationData: SelectedData): Promise<void> {
+    private async buildSubstance(simulationData: InputData): Promise<void> {
         console.log('building substance')
         this.scene = new Scene3D(this.canvas, simulationData);
         this.isBuilt = true;

@@ -1,10 +1,11 @@
-import { OutputData, SimulationRun, InputData } from '../types/types';
 import { dbManager } from '../db/databaseManager';
 import { 
     ModelSetupData, 
     RunDynamicsData, 
     ScriptData, 
-    SelectedData, 
+    InputData,
+    OutputData,
+    SimulationRun,
     atomType, 
     boundary, 
     potentialModel,
@@ -13,8 +14,14 @@ import {
 import { log } from 'three/webgpu';
 
 export class DataManager {
+    static simulationRun: SimulationRun;
+    static InputData: InputData;
+    static OutputData: OutputData;
+    static ScriptData: ScriptData;
+    // do i need a boolean to check if simulation is running?
+    // what about a boolean for simulationrun saved? hmm. i'll sleep on it and it may come to me in a dream
+
     static updateOutputDisplay(data: OutputData): void {
-        // Update basic measurements
         // check data exists
         if(data === undefined) {
             console.warn('data is undefined');
@@ -96,11 +103,11 @@ export class DataManager {
         };
     }
 
-    static collectSelectedData(): SelectedData {
+    static collectSelectedData(): InputData {
         return {
             ModelSetupData: this.collectCurrentModelSetupData(),
             RunDynamicsData: this.collectCurrentRunDynamicsData(),
-            ScriptData: this.collectCurrentScriptData()
+            ScriptData: this.ScriptData
         };
     }
 
@@ -149,7 +156,6 @@ export class DataManager {
     }
 
     static collectCurrentRunDynamicsData(): RunDynamicsData {
-        // Get all input elements
         const simulationTypeSelect = document.getElementById('SimulationType') as HTMLSelectElement;
         const temperatureInput = document.getElementById('Temperature') as HTMLInputElement;
         const volumeInput = document.getElementById('Volume') as HTMLInputElement;
@@ -159,20 +165,11 @@ export class DataManager {
 
         return {
             simulationType: simulationTypeSelect?.value as simulationType || 'Const-PT',
-            temperature: parseFloat(temperatureInput?.value || '0'),
-            volume: parseFloat(volumeInput?.value || '0'),
+            initialTemperature: parseFloat(temperatureInput?.value || '0'),
+            initialVolume: parseFloat(volumeInput?.value || '0'),
             timeStep: parseFloat(timeStepInput?.value || '0'),
             stepCount: parseInt(stepCountInput?.value || '0'),
             interval: parseFloat(intervalInput?.value || '0')
-        };
-    }
-
-    static collectCurrentScriptData(): ScriptData {
-        // Assuming there's a textarea or input for scripts
-        const scriptInput = document.getElementById('script') as HTMLTextAreaElement;
-        
-        return {
-            script: scriptInput?.value || ''
         };
     }
 
@@ -199,47 +196,62 @@ export class DataManager {
     static exportSimulationData(data: SimulationRun[]): string {
         console.log(data);
         const headers = [
+            'UID',
             'Run Number',
             'Timestamp',
             'Atom Type',
             'Number of Atoms',
             'Boundary Type',
             'Simulation Type',
-            'Temperature (K)',
+            'Initial Temperature (K)',
+            'Initial Volume (L/mol)',
+            'Time Steps (s)', 
+            'Number of Steps',
+            'Update Interval (s)',
+            'Sample Temperature (K)',
             'Avg Temperature (K)',
-            'Pressure (atm)',
+            'Sample Pressure (atm)',
             'Avg Pressure (atm)',
-            'Volume (L/mol)',
+            'Sample Volume (L/mol)',
             'Avg Volume (L/mol)',
-            'Total Energy (J/mol)',
+            'Sample Total Energy (J/mol)',
             'Avg Total Energy (J/mol)',
-            'Kinetic Energy (J/mol)',
+            'Sample Kinetic Energy (J/mol)',
             'Avg Kinetic Energy (J/mol)',
-            'Potential Energy (J/mol)',
-            'Avg Potential Energy (J/mol)'
-        ].join(',');
+            'Sample Potential Energy (J/mol)',
+            'Avg Potential Energy (J/mol)',
+        ].join(','); 
 
-        const rows = data.map(run => [
-            run.runNumber,
-            run.timestamp,
-            run.inputData.ModelSetupData.atomType,
-            run.inputData.ModelSetupData.numAtoms,
-            run.inputData.ModelSetupData.boundary,
-            run.inputData.RunDynamicsData.simulationType,
-            run.outputData.basic.temperature.sample,
-            run.outputData.basic.temperature.average,
-            run.outputData.basic.pressure.sample,
-            run.outputData.basic.pressure.average,
-            run.outputData.basic.volume.sample,
-            run.outputData.basic.volume.average,
-            run.outputData.energy.total.sample,
-            run.outputData.energy.total.average,
-            run.outputData.energy.kinetic.sample,
-            run.outputData.energy.kinetic.average,
-            run.outputData.energy.potential.sample,
-            run.outputData.energy.potential.average
-        ].join(','));
-
+        const rows = data.map(run => {
+            return [
+                run.uid,
+                run.runNumber,
+                run.timestamp,
+                run.inputData.ModelSetupData.atomType,
+                run.inputData.ModelSetupData.numAtoms,
+                run.inputData.ModelSetupData.boundary,
+                run.inputData.RunDynamicsData.simulationType,
+                run.inputData.RunDynamicsData.initialTemperature,
+                run.inputData.RunDynamicsData.initialVolume,
+                run.inputData.RunDynamicsData.timeStep,
+                run.inputData.RunDynamicsData.stepCount,
+                run.inputData.RunDynamicsData.interval,
+                run.outputData.basic.temperature.sample,
+                run.outputData.basic.temperature.average,
+                run.outputData.basic.pressure.sample,
+                run.outputData.basic.pressure.average,
+                run.outputData.basic.volume.sample,
+                run.outputData.basic.volume.average,
+                run.outputData.energy.total.sample,
+                run.outputData.energy.total.average,
+                run.outputData.energy.kinetic.sample,
+                run.outputData.energy.kinetic.average,
+                run.outputData.energy.potential.sample,
+                run.outputData.energy.potential.average
+            ].join(',');
+        });
+        
+        console.log(rows);
         return [headers, ...rows].join('\n');
     }
 }
