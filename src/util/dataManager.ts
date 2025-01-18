@@ -15,7 +15,11 @@ import { log } from 'three/webgpu';
 export class DataManager {
     static updateOutputDisplay(data: OutputData): void {
         // Update basic measurements
-        // check data.basic exists
+        // check data exists
+        if(data === undefined) {
+            console.warn('data is undefined');
+            return;
+        }
         if(data.basic === undefined) {
             console.warn('data.basic is undefined');
             return;
@@ -172,15 +176,13 @@ export class DataManager {
         };
     }
 
-    // private static validateNumericInput(value: string, defaultValue: number = 0): number {
-    //     const parsed = parseFloat(value);
-    //     return isNaN(parsed) ? defaultValue : parsed;
-    // }
-
+    /**
+     * Gets the current simulation run from the UI. By default, it will save the run to the database.
+     */
     static async getCurrentSimulationRun(outputData: OutputData, inputData: InputData, saveToDB: boolean = true): Promise<SimulationRun> {
         const run: SimulationRun = {
             uid: (Date.now()*17),
-            runNumber: Date.now(),
+            runNumber: 0o1,
             timestamp: new Date().toISOString(),
             outputData,
             inputData
@@ -191,6 +193,9 @@ export class DataManager {
         return run;
     }
 
+    /**
+     * Exports the simulation data to a CSV string.
+     */
     static exportSimulationData(data: SimulationRun[]): string {
         console.log(data);
         const headers = [

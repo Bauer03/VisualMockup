@@ -1409,11 +1409,6 @@ input::-webkit-outer-spin-button,
   background-color: rgb(75 85 99 / var(--tw-bg-opacity));
 }
 
-.dark\:disabled\:bg-gray-700:disabled:is(.dark *) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
-}
-
 .dark\:disabled\:text-gray-400:disabled:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));

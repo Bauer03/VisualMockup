@@ -35,7 +35,8 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
                 const inputData = DataManager.collectSelectedData();
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 const outputData = DataManager.collectOutputData();
-                await DataManager.getCurrentSimulationRun(outputData, inputData, true);
+                alert("NOT SAVING TO DB!");
+                // await DataManager.getCurrentSimulationRun(outputData, inputData, true);
             }
             progressDiv.textContent = `Completed ${count} simulations`;
         } catch (error) {

@@ -1,6 +1,7 @@
 import { SimulationRun } from '../types/types';
 import { dbManager } from '../db/databaseManager';
 import { DataManager } from '../util/dataManager';
+import { temp } from 'three/webgpu';
 
 export const createOutputContent = async (): Promise<HTMLElement> => {
     const content = document.createElement("div");
@@ -177,13 +178,16 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', async () => {
         try {
-            const currentData = await DataManager.getCurrentSimulationRun(
-                DataManager.collectOutputData(),
-                DataManager.collectSelectedData()
-            );
+            let tempoutput = DataManager.collectOutputData();
+            let tempinput = DataManager.collectSelectedData();
+            const currentData = await DataManager.getCurrentSimulationRun(tempoutput, tempinput);
+
+            // debug
+            // console.log("Temp output: " + JSON.stringify(tempoutput));
+            // console.log("Temp input: " + JSON.stringify(tempinput));
+            // console.log("Current data: " + JSON.stringify(currentData));
             
             if (currentData) {
-                // await dbManager.addOutput(currentData); implemented in datamanager
                 const event = new Event('output-copied');
                 document.dispatchEvent(event);
             }

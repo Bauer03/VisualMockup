@@ -74,8 +74,12 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     dialog.appendChild(dialogContent);
     document.body.appendChild(dialog);
 
-    // Function to create dialog popup with output details
-    const showOutputDetails = (output: any, index: number) => {
+    /**
+     * Creates a dialog popup with output details. Triggered by clicking on an output in the notebook.
+     */
+    const showOutputDetails = (output: SimulationRun, index: number) => {
+        // debug
+        // console.log("Showing output details: " + JSON.stringify(output, null, 2));
         dialogContent.innerHTML = `
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-lg font-medium">Output ${index} Details</h2>
@@ -88,31 +92,31 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
                     <div class="font-medium text-sm">Basic Measurements</div>
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm pl-4">
                         <div>Temperature:</div>
-                        <div>${output.basic.temperature.sample}K (avg: ${output.basic.temperature.average}K)</div>
+                        <div>${output.outputData.basic.temperature.sample}K (avg: ${output.outputData.basic.temperature.average}K)</div>
                         <div>Pressure:</div>
-                        <div>${output.basic.pressure.sample} atm (avg: ${output.basic.pressure.average} atm)</div>
+                        <div>${output.outputData.basic.pressure.sample} atm (avg: ${output.outputData.basic.pressure.average} atm)</div>
                         <div>Volume:</div>
-                        <div>${output.basic.volume.sample} L/mol (avg: ${output.basic.volume.average} L/mol)</div>
+                        <div>${output.outputData.basic.volume.sample} L/mol (avg: ${output.outputData.basic.volume.average} L/mol)</div>
                     </div>
                 </div>
                 <div class="grid gap-2">
                     <div class="font-medium text-sm">Energy Measurements</div>
                     <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm pl-4">
                         <div>Total Energy:</div>
-                        <div>${output.energy.total.sample} J/mol (avg: ${output.energy.total.average} J/mol)</div>
+                        <div>${output.outputData.energy.total.sample} J/mol (avg: ${output.outputData.energy.total.average} J/mol)</div>
                         <div>Kinetic Energy:</div>
-                        <div>${output.energy.kinetic.sample} J/mol (avg: ${output.energy.kinetic.average} J/mol)</div>
+                        <div>${output.outputData.energy.kinetic.sample} J/mol (avg: ${output.outputData.energy.kinetic.average} J/mol)</div>
                         <div>Potential Energy:</div>
-                        <div>${output.energy.potential.sample} J/mol (avg: ${output.energy.potential.average} J/mol)</div>
+                        <div>${output.outputData.energy.potential.sample} J/mol (avg: ${output.outputData.energy.potential.average} J/mol)</div>
                     </div>
                 </div>
             </div>
         `;
-
+    
         dialogContent.querySelector('button')?.addEventListener('click', () => {
             dialog.classList.add('hidden');
         });
-
+    
         dialog.classList.remove('hidden');
     };
 
@@ -148,6 +152,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
             element.appendChild(info);
             element.appendChild(deleteBtn);
             
+            // seems this is sometimes undefined?
             element.onclick = () => showOutputDetails(output, index);
             
             outputsContainer.appendChild(element);
