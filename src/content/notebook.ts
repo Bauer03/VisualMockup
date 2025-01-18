@@ -74,15 +74,10 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     dialog.appendChild(dialogContent);
     document.body.appendChild(dialog);
 
-    /**
-     * Creates a dialog popup with output details. Triggered by clicking on an output in the notebook.
-     */
     const showOutputDetails = (output: SimulationRun, index: number) => {
-        // debug
-        // console.log("Showing output details: " + JSON.stringify(output, null, 2));
         dialogContent.innerHTML = `
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-medium">Output ${index} Details</h2>
+                <h2 class="text-lg font-medium">Output ${index + 1} Details</h2>
                 <button class="material-icons text-gray-300 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                     close
                 </button>
@@ -120,9 +115,6 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
         dialog.classList.remove('hidden');
     };
 
-    /**
-     * Loads and displays all outputs from the database
-     */
     const loadOutputs = async () => {
         const outputs = await dbManager.getAllOutputs();
         outputsContainer.innerHTML = '';
@@ -144,22 +136,39 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
             deleteBtn.className = 'material-icons text-sm text-gray-500 hover:text-red-500 transition-colors duration-200 ml-2';
             deleteBtn.textContent = 'delete';
             deleteBtn.onclick = async (e) => {
-                e.stopPropagation();  // Prevent dialog from opening
-                await dbManager.deleteOutput(output.uid);
-                await loadOutputs();
+                e.stopPropagation();
+                e.preventDefault();
+                
+                try {
+                    // debug
+                    // console.log('Delete button clicked for output:', output);
+                    // console.log('UID:', output.uid);
+                    // console.log('UID type:', typeof output.uid);
+                    // console.log('Full output object keys:', Object.keys(output));
+                    // console.log('Output stringified then parsed:', JSON.parse(JSON.stringify(output)).uid);
+                    
+                    if (typeof output.uid !== 'number') {
+                        throw new Error('Invalid UID type: ' + typeof output.uid);
+                    }
+                    
+                    await dbManager.deleteOutput(Number(output.uid)); // Ensure number type
+                    element.remove();
+                    await loadOutputs();
+                    
+                } catch (error) {
+                    console.error('Error deleting output:', error);
+                    alert('Failed to delete output. Please try again.');
+                }
             };
             
             element.appendChild(info);
             element.appendChild(deleteBtn);
-            
-            // seems this is sometimes undefined?
             element.onclick = () => showOutputDetails(output, index);
             
             outputsContainer.appendChild(element);
         });
     };
 
-    // clears all outputs from indexeddb
     clearBtn.onclick = async () => {
         if (confirm('Are you sure you want to clear all outputs?')) {
             await dbManager.clearAllOutputs();
@@ -168,8 +177,7 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     };
 
     downloadBtn.onclick = async () => {
-        let outputs: SimulationRun[] = [];
-        dbManager.getAllOutputs().then(data => outputs = data);
+        const outputs = await dbManager.getAllOutputs();
         if(outputs.length === 0) {
             alert("There's nothing to download right now! Try copying your simulation results to the notebook first.");
             return;
@@ -189,7 +197,6 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
 
     document.addEventListener('output-copied', refreshNotebookListener);
 
-    // Add controls for clearing and downloading outputs
     let notebookControls = document.createElement('div');
     notebookControls.className = 'flex justify-end items-center gap-4';
     notebookControls.appendChild(clearBtn);
@@ -199,7 +206,6 @@ export const createNotebookContent = async (): Promise<HTMLElement> => {
     scrollableContainer.appendChild(outputsContainer);
     content.appendChild(scrollableContainer);
 
-    // Initial load
     await loadOutputs();
     return content;
 };

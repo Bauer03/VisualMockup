@@ -1,4 +1,5 @@
 import { createPotentialParameters } from './potentialParameters';
+import { DataManager } from '../util/dataManager';
 
 export const createModelSetupContent = (): HTMLElement => {
     const content = document.createElement('div');
@@ -65,42 +66,78 @@ export const createModelSetupContent = (): HTMLElement => {
     </div>
     `;
 
+    // all the code below updates dataManager's modelSetupData on change, which is then fetched when simulation is built
+    
     let atomCount = formContent.querySelector("#AtomCount") as HTMLInputElement;
     let atomType = formContent.querySelector("#AtomType") as HTMLSelectElement;
     let atomicMass = formContent.querySelector("#AtomicMass") as HTMLInputElement;
+    let boundarySelector = formContent.querySelector("#Boundary") as HTMLSelectElement;
+
+    atomCount.addEventListener("change", (event) => {
+        const atomCount = parseInt((event.target as HTMLInputElement).value);
+        if(isNaN(atomCount)) {
+            return;
+        }
+        DataManager.modelSetupData.numAtoms = atomCount;
+    });
 
     atomType.addEventListener("change", (event) => {
         const atomType = (event.target as HTMLSelectElement).value;
-        // based on atom type, set atomicMass.
-        if(atomType === 'He') {
-            if(atomicMass.value === "") {
-                atomicMass.placeholder = "4.002602";
-            } else atomicMass.value = "4.002602";
-        } else if(atomType === 'Ne') {
-            if(atomicMass.value === "") {
-                atomicMass.placeholder = "20.1797";
-            } else atomicMass.value = "20.1797";
-        } else if(atomType === 'Ar') {
-            if(atomicMass.value === "") {
-                atomicMass.placeholder = "39.948";
-            } else atomicMass.value = "39.948"; 
-        } else if(atomType === 'Kr') {
-            if(atomicMass.value === "") {
-                atomicMass.placeholder = "83.798";
-            } else atomicMass.value = "83.798";
-        } else if(atomType === 'Xe') {
-            if(atomicMass.value === "") {
-                atomicMass.placeholder = "131.293";
-            } else atomicMass.value = "131.293";
-        } else if(atomType === 'Rn') {  
-            if(atomicMass.value === "") atomicMass.placeholder = "222"; 
-            else atomicMass.value = "222";
+        if(atomType !== "He" && atomType !== "Ne" && atomType !== "Ar" && atomType !== "Kr" && atomType !== "Xe" && atomType !== "User") {
+            return;
+        }
+        DataManager.modelSetupData.atomType = atomType;
+
+        switch(atomType) {
+            case 'He':
+                atomicMass.value = "4.002602";
+                DataManager.modelSetupData.atomicMass = 4.002602;
+                break;
+            case 'Ne':
+                atomicMass.value = "20.1797";
+                DataManager.modelSetupData.atomicMass = 20.1797;
+                break;
+            case 'Ar':
+                atomicMass.value = "39.948";
+                DataManager.modelSetupData.atomicMass = 39.948;
+                break;
+            case 'Kr':
+                atomicMass.value = "83.798";
+                DataManager.modelSetupData.atomicMass = 83.798;
+                break;
+            case 'Xe':
+                atomicMass.value = "131.293";
+                DataManager.modelSetupData.atomicMass = 131.293;
+                break;
+            default:
+                atomicMass.value = "User";
+                DataManager.modelSetupData.atomicMass = 0;
+                break;
         }
     });
 
+    atomicMass.addEventListener("change", (event) => {
+        const atomicMass = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(atomicMass)) {
+            return;
+        }
+        DataManager.modelSetupData.atomicMass = atomicMass;
+    });
+
+    boundarySelector.addEventListener("change", (event) => {
+        const boundary = (event.target as HTMLSelectElement).value;
+        if(boundary !== "Fixed Walls" && boundary !== "Periodic") {
+            return;
+        }
+        DataManager.modelSetupData.boundary = boundary;
+    });
+    
     let pModelDropdown = formContent.querySelector("#PotentialModel") as HTMLSelectElement;
     pModelDropdown.onchange = (event) => {
         const potentialModel = (event.target as HTMLSelectElement).value;
+        if(potentialModel !== "LennardJones" && potentialModel !== "NoPotential" && potentialModel !== "SoftSphere") {
+            return;
+        }
         if((document.getElementById('model-setup-inputs') as HTMLElement).children.length > 1) {
             document.getElementById('model-setup-inputs')?.children[1].remove();
         }
@@ -110,6 +147,7 @@ export const createModelSetupContent = (): HTMLElement => {
             }
             document.getElementById('model-setup-inputs')?.appendChild(createPotentialParameters(potentialModel));    
         }
+        DataManager.modelSetupData.potentialModel = potentialModel;
     };
 
     content.appendChild(formContent);

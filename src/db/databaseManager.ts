@@ -3,12 +3,9 @@ import { SimulationRun } from "../types/types";
 export class DatabaseManager {
     private static DB_NAME = 'virtualSubstanceDB';
     private static STORE_NAME = 'outputs';
-    private static VERSION = 3.2;
+    private static VERSION = 4;
     private db: IDBDatabase | null = null;
 
-    /**
-     * Initializes the database. Should be called once when the application starts.
-     */
     async init(): Promise<void> {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(DatabaseManager.DB_NAME, DatabaseManager.VERSION);
@@ -22,47 +19,46 @@ export class DatabaseManager {
 
             request.onupgradeneeded = (event) => {
                 const db = (event.target as IDBOpenDBRequest).result;
-                // Create the object store if it doesn't exist
-                if (!db.objectStoreNames.contains(DatabaseManager.STORE_NAME)) {
-                    db.createObjectStore(DatabaseManager.STORE_NAME, { 
-                        keyPath: 'id',
-                        autoIncrement: true
-                    });
+                
+                // If the old store exists, delete it
+                if (db.objectStoreNames.contains(DatabaseManager.STORE_NAME)) {
+                    db.deleteObjectStore(DatabaseManager.STORE_NAME);
                 }
+                
+                // Create new store using string uid as keyPath
+                db.createObjectStore(DatabaseManager.STORE_NAME, { 
+                    keyPath: 'uid_str'
+                });
             };
         });
     }
 
-    /**
-     * Adds a new output to the database
-     */
-    async addOutput(data: SimulationRun): Promise<number> {
+    async addOutput(data: SimulationRun): Promise<string> {
         if (!this.db) throw new Error('Database not initialized');
 
-        // validate data to ensure it's a valid SimulationRun
+        // Validate data
         if(!data.uid || !data.runNumber || !data.timestamp || !data.outputData || !data.inputData) {
-            alert('Invalid data');
+            alert('Invalid data: Cannot save to db.');
             throw new Error('Invalid data');
         }
-
-        // debug
-        // console.log("Adding output: " + JSON.stringify(data));
 
         return new Promise((resolve, reject) => {
             const transaction = this.db!.transaction([DatabaseManager.STORE_NAME], 'readwrite');
             const store = transaction.objectStore(DatabaseManager.STORE_NAME);
             
-            const timestamp = new Date().toISOString();
-            const request = store.add({ ...data, timestamp });
+            // Convert the numeric UID to string and add it as a separate key
+            const dataWithStringUID = {
+                ...data,
+                uid_str: data.uid.toString()
+            };
+            
+            const request = store.add(dataWithStringUID);
 
-            request.onsuccess = () => resolve(request.result as number);
+            request.onsuccess = () => resolve(dataWithStringUID.uid_str);
             request.onerror = () => reject(request.error);
         });
     }
 
-    /**
-     * Gets all simulationRuns from the database
-     */
     async getAllOutputs(): Promise<SimulationRun[]> {
         if (!this.db) throw new Error('Database not initialized');
 
@@ -71,26 +67,47 @@ export class DatabaseManager {
             const store = transaction.objectStore(DatabaseManager.STORE_NAME);
             const request = store.getAll();
 
-            request.onsuccess = () => resolve(request.result);
+            request.onsuccess = () => {
+                // Convert back to the expected format
+                const results = request.result.map(item => {
+                    const { uid_str, ...rest } = item;
+                    return {
+                        ...rest,
+                        uid: Number(uid_str)
+                    } as SimulationRun;
+                });
+                resolve(results);
+            };
             request.onerror = () => reject(request.error);
         });
     }
 
-    // Delete a specific output
-    async deleteOutput(id: number): Promise<void> {
+    async deleteOutput(uid: number): Promise<void> {
         if (!this.db) throw new Error('Database not initialized');
 
         return new Promise((resolve, reject) => {
             const transaction = this.db!.transaction([DatabaseManager.STORE_NAME], 'readwrite');
             const store = transaction.objectStore(DatabaseManager.STORE_NAME);
-            const request = store.delete(id);
-
-            request.onsuccess = () => resolve();
-            request.onerror = () => reject(request.error);
+            
+            // debug
+            // Convert the numeric UID to string for lookup
+            const uid_str = uid.toString();
+            // console.log('Attempting to delete record with uid_str:', uid_str);
+            
+            const deleteRequest = store.delete(uid_str);
+            
+            deleteRequest.onsuccess = () => {
+                // console.log('Successfully deleted record');
+                resolve();
+            };
+            
+            deleteRequest.onerror = (error) => {
+                console.error('Delete request error:', error);
+                reject(new Error('Failed to delete record'));
+            };
         });
     }
 
-    // Clear all outputs
     async clearAllOutputs(): Promise<void> {
         if (!this.db) throw new Error('Database not initialized');
 
@@ -105,5 +122,4 @@ export class DatabaseManager {
     }
 }
 
-// Export a singleton instance
 export const dbManager = new DatabaseManager();

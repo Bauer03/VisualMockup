@@ -1,3 +1,4 @@
+import { dbManager } from '../db/databaseManager';
 import { DataManager } from '../util/dataManager';
 
 export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
@@ -31,11 +32,8 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
         try {
             for (let i = 0; i < count; i++) {
                 progressDiv.textContent = `Running simulation ${i + 1} of ${count}...`;
-                
-                const inputData = DataManager.collectSelectedData();
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                const outputData = DataManager.collectOutputData();
-                await DataManager.getCurrentSimulationRun(outputData, inputData, true);
+                let currentData = DataManager.getCurrentSimulationRun();
+                await dbManager.addOutput(currentData);
             }
             progressDiv.textContent = `Completed ${count} simulations`;
         } catch (error) {
@@ -46,6 +44,15 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
             setTimeout(() => progressDiv.classList.add('hidden'), 2000);
         }
     };
+
+    // update the runCount input when the number of runs changes
+    runCount.addEventListener("change", (event) => {
+        const runCount = parseInt((event.target as HTMLInputElement).value);
+        if(isNaN(runCount)) {
+            return;
+        }
+        DataManager.runDynamicsData.stepCount = runCount;
+    });
 
     content.appendChild(runCount);
     content.appendChild(runButton);

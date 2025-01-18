@@ -46,7 +46,7 @@ export interface InputData {
 // types here make sure i'm not passing in wrong data & for autocompletion
 export type atomType = "He" | "Ne" | "Ar" | "Kr" | "Xe" | "User";
 export type boundary = "Fixed Walls" | "Periodic";
-export type potentialModel = "Lennard-Jones" | "No Potential" | "Soft Sphere";
+export type potentialModel = "LennardJones" | "NoPotential" | "SoftSphere";
 export interface ModelSetupData {
     atomType: atomType;
     boundary: boundary;
@@ -59,7 +59,7 @@ export interface ModelSetupData {
     };
 }
 
-export type simulationType = "Const-PT" | "Const-VT";
+export type simulationType = "ConstPT" | "ConstVT";
 export interface RunDynamicsData {
     simulationType: simulationType;
     initialTemperature: number;

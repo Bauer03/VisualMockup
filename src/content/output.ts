@@ -59,18 +59,18 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
                     <tbody>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Temperature (K)</td>
-                            <td id="temperature-sample" class="text-right w-16">20</td>
-                            <td id="temperature-average" class="text-right w-16">20</td>
+                            <td id="temperature-sample" class="text-right w-16">0</td>
+                            <td id="temperature-average" class="text-right w-16">0</td>
                         </tr>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Pressure (atm)</td>
-                            <td id="pressure-sample" class="text-right w-16">20</td>
-                            <td id="pressure-average" class="text-right w-16">20</td>
+                            <td id="pressure-sample" class="text-right w-16">0</td>
+                            <td id="pressure-average" class="text-right w-16">0</td>
                         </tr>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Volume (L/mol)</td>
-                            <td id="volume-sample" class="text-right w-16">20</td>
-                            <td id="volume-average" class="text-right w-16">20</td>
+                            <td id="volume-sample" class="text-right w-16">0</td>
+                            <td id="volume-average" class="text-right w-16">0</td>
                         </tr>
                     </tbody>
                 </table>
@@ -87,18 +87,18 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
                     <tbody>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Total Energy (J/mol)</td>
-                            <td id="total-energy-sample" class="text-right w-16">20</td>
-                            <td id="total-energy-average" class="text-right w-16">20</td>
+                            <td id="total-energy-sample" class="text-right w-16">0</td>
+                            <td id="total-energy-average" class="text-right w-16">0</td>
                         </tr>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Kinetic Energy (J/mol)</td>
-                            <td id="kinetic-energy-sample" class="text-right w-16">20</td>
-                            <td id="kinetic-energy-average" class="text-right w-16">20</td>
+                            <td id="kinetic-energy-sample" class="text-right w-16">0</td>
+                            <td id="kinetic-energy-average" class="text-right w-16">0</td>
                         </tr>
                         <tr class="border-b dark:border-gray-600">
                             <td class="text-left py-1 whitespace-nowrap">Potential Energy (J/mol)</td>
-                            <td id="potential-energy-sample" class="text-right w-16">20</td>
-                            <td id="potential-energy-average" class="text-right w-16">20</td>
+                            <td id="potential-energy-sample" class="text-right w-16">0</td>
+                            <td id="potential-energy-average" class="text-right w-16">0</td>
                         </tr>
                     </tbody>
                 </table>
@@ -108,21 +108,21 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
                     <div class="grid gap-2">
                         <div class="flex gap-4 justify-between">
                             <span>Time (ps)</span>
-                            <span id="current-time" class="w-16 text-right">20</span>
+                            <span id="current-time" class="w-16 text-right">0</span>
                         </div>
                         <div class="flex gap-4 justify-between">
                             <span>Total Time (ps)</span>
-                            <span id="total-time" class="w-16 text-right">20</span>
+                            <span id="total-time" class="w-16 text-right">0</span>
                         </div>
                     </div>
                     <div class="grid gap-2">
                         <div class="flex gap-4 justify-between">
                             <span>Run Time</span>
-                            <span id="run-time" class="w-16 text-right">20</span>
+                            <span id="run-time" class="w-16 text-right">0</span>
                         </div>
                         <div class="flex gap-4 justify-between">
                             <span>Total Time</span>
-                            <span id="total-runtime" class="w-16 text-right">20</span>
+                            <span id="total-runtime" class="w-16 text-right">0</span>
                         </div>
                     </div>
                 </div>
@@ -168,29 +168,11 @@ export const createOutputContent = async (): Promise<HTMLElement> => {
         timeContent.classList.remove('hidden');
     });
 
-    let outputs: SimulationRun[] = [];
-    await dbManager.getAllOutputs().then(data => outputs = data);
-    if (outputs.length > 0) {
-        const latestOutput = outputs[outputs.length - 1];
-        DataManager.updateOutputDisplay(latestOutput.outputData);
-    }
-
     const copyButton = content.querySelector('#copy-notebook') as HTMLButtonElement;
     copyButton.addEventListener('click', async () => {
         try {
-            let tempoutput = DataManager.collectOutputData();
-            let tempinput = DataManager.collectSelectedData();
-            const currentData = await DataManager.getCurrentSimulationRun(tempoutput, tempinput);
-
-            // debug
-            // console.log("Temp output: " + JSON.stringify(tempoutput));
-            // console.log("Temp input: " + JSON.stringify(tempinput));
-            // console.log("Current data: " + JSON.stringify(currentData));
-            
-            if (currentData) {
-                const event = new Event('output-copied');
-                document.dispatchEvent(event);
-            }
+            const curSimulationRun = DataManager.getCurrentSimulationRun();
+            await dbManager.addOutput(curSimulationRun).then(() => document.dispatchEvent(new Event('output-copied')));
         } catch (error) {
             console.error('Error handling copy to notebook:', error);
         }

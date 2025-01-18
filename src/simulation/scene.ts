@@ -1,32 +1,12 @@
 import * as THREE from 'three';
-import { ModelSetupData, SelectedData, RunDynamicsData, ScriptData, rotateOpx } from '../types/types';
-import { ThemeManager } from '../theme/themeManager'; // may need for mid render color changes, idk
+import {
+    ModelSetupData,
+    RunDynamicsData,
+    ScriptData,
+    rotateOpx,
+    InputData
+} from '../types/types';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-
-const defaultModelData: ModelSetupData = {
-    atomType: 'He',
-    boundary: 'Fixed Walls',
-    potentialModel: 'No Potential',
-    numAtoms: 1,
-    atomicMass: 1,
-    potentialParams: {
-        sigma: 1,
-        epsilon: 1
-    }
-};
-
-const defaultRunDynamicsData: RunDynamicsData = {
-    simulationType: 'Const-PT',
-    temperature: 0,
-    volume: 0,
-    timeStep: 0,
-    stepCount: 0,
-    interval: 0
-};
-
-const defaultScriptData: ScriptData = {
-    script: 'Default Script Contents'
-};
 
 export class Scene3D {
     private scene: THREE.Scene;
@@ -34,10 +14,7 @@ export class Scene3D {
     private renderer: THREE.WebGLRenderer;
     private cube: THREE.Mesh;
     public rotate = false;
-    private modelData: ModelSetupData;
-    private runDynamicsData: RunDynamicsData;
-    private ScriptData: ScriptData;
-    private selectedData: SelectedData;
+    private inputData: InputData;
     
     private deltaScale = 1;
     private lastTime = 0;
@@ -48,11 +25,8 @@ export class Scene3D {
 
     private controls:OrbitControls;
 
-    constructor(canvas: HTMLCanvasElement, selectedData: SelectedData) {
-        this.selectedData = selectedData;
-        this.modelData = selectedData.ModelSetupData ?? defaultModelData;
-        this.runDynamicsData = selectedData.RunDynamicsData ?? defaultRunDynamicsData;
-        this.ScriptData = selectedData.ScriptData ?? defaultScriptData;
+    constructor(canvas: HTMLCanvasElement, inputData: InputData) {
+        this.inputData = inputData;
 
         this.scene = new THREE.Scene();
 
@@ -110,7 +84,7 @@ export class Scene3D {
         this.deltaScale = delta / (1000 / 60);
         this.lastTime = performance.now();
 
-        // Frame per second debug - don't delete
+        // Frame per second debug
         // console.log(16.6667/delta*60, this.deltaScale);
     }
 
@@ -150,7 +124,9 @@ export class Scene3D {
         this.renderer.render(this.scene, this.camera);
     }
 
-    // zoom in our out. why am I negating zoomIn? because it worky
+    /**
+     * Zooms in or out of the scene by a factor of 1.1 or 0.9.
+     */
     zoomCamera(zoomIn: boolean): void {
         const zoom = !zoomIn ? 1.1 : 0.9;
         this.camera.position.z *= zoom;

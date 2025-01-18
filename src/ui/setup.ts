@@ -13,7 +13,7 @@ export function setupUI(simulation: SimulationManager) {
 
     buildButton.addEventListener('click', async () => {
         try {
-            let curSelectedData = DataManager.collectSelectedData();
+            let curInputData = DataManager.collectInputData();
             // todo: build substance using selected data
             await simulation.toggleBuild();
             updateButtons(buildButton, runButton, simulation);

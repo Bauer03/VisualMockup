@@ -1,4 +1,3 @@
-import { dbManager } from '../db/databaseManager';
 import { 
     ModelSetupData, 
     RunDynamicsData, 
@@ -6,23 +5,64 @@ import {
     InputData,
     OutputData,
     SimulationRun,
-    atomType, 
-    boundary, 
-    potentialModel,
-    simulationType,
 } from '../types/types';
-import { log } from 'three/webgpu';
+
+const defaultModelData: ModelSetupData = {
+    atomType: 'He',
+    boundary: 'Fixed Walls',
+    potentialModel: 'NoPotential',
+    numAtoms: 1,
+    atomicMass: 1,
+    potentialParams: {
+        sigma: 1,
+        epsilon: 1
+    }
+};
+
+const defaultRunDynamicsData: RunDynamicsData = {
+    simulationType: 'ConstPT',
+    initialTemperature: 0,
+    initialVolume: 0,
+    timeStep: 0,
+    stepCount: 0,
+    interval: 0
+};
+
+const defaultScriptData: ScriptData = 1;
+
+const defaultOutputData: OutputData = {
+    basic: {
+        temperature: { sample: 0, average: 0 },
+        pressure: { sample: 0, average: 0 },
+        volume: { sample: 0, average: 0 }
+    },
+    energy: {
+        total: { sample: 0, average: 0 },
+        kinetic: { sample: 0, average: 0 },
+        potential: { sample: 0, average: 0 }
+    }
+};
 
 export class DataManager {
+    private static counter = 0;
     static simulationRun: SimulationRun;
     static InputData: InputData;
     static OutputData: OutputData;
-    static ScriptData: ScriptData;
-    // do i need a boolean to check if simulation is running?
-    // what about a boolean for simulationrun saved? hmm. i'll sleep on it and it may come to me in a dream
+    static modelSetupData: ModelSetupData = defaultModelData;
+    static runDynamicsData: RunDynamicsData = defaultRunDynamicsData;
+    static scriptData: ScriptData = defaultScriptData;
+
+    /**
+     * Generates a unique ID combining timestamp and counter
+     * Format: <timestamp><counter> as a number
+     */
+    private static generateUID(): number {
+        const timestamp = Date.now();
+        this.counter = (this.counter + 1) % 1000; // Reset at 1000 to keep numbers manageable
+        return Number(`${timestamp}${this.counter.toString().padStart(3, '0')}`);
+    }
 
     static updateOutputDisplay(data: OutputData): void {
-        // check data exists
         if(data === undefined) {
             console.warn('data is undefined');
             return;
@@ -50,7 +90,6 @@ export class DataManager {
             this.updateElement('volume-average', data.basic.volume.average);
         }
 
-        // Update energy measurements
         this.updateElement('total-energy-sample', data.energy.total.sample);
         this.updateElement('total-energy-average', data.energy.total.average);
         this.updateElement('kinetic-energy-sample', data.energy.kinetic.sample);
@@ -59,140 +98,61 @@ export class DataManager {
         this.updateElement('potential-energy-average', data.energy.potential.average);
     }
 
-    /**
-     * Updates the text content of an element with the given id using the given value
-     */
     private static updateElement(id: string, value: number): void {
         const element = document.getElementById(id);
         if (element) element.textContent = value.toString();
     }
 
-    /**
-     * Searches the DOM for the current output data and returns it as an object
-     */
-    static collectOutputData(): OutputData {
+    static getCurrentSimulationRun(): SimulationRun {
         return {
-            basic: {
-                temperature: {
-                    sample: this.getElementValue('temperature-sample'),
-                    average: this.getElementValue('temperature-average')
-                },
-                pressure: {
-                    sample: this.getElementValue('pressure-sample'),
-                    average: this.getElementValue('pressure-average')
-                },
-                volume: {
-                    sample: this.getElementValue('volume-sample'),
-                    average: this.getElementValue('volume-average')
-                }
-            },
-            energy: {
-                total: {
-                    sample: this.getElementValue('total-energy-sample'),
-                    average: this.getElementValue('total-energy-average')
-                },
-                kinetic: {
-                    sample: this.getElementValue('kinetic-energy-sample'),
-                    average: this.getElementValue('kinetic-energy-average')
-                },
-                potential: {
-                    sample: this.getElementValue('potential-energy-sample'),
-                    average: this.getElementValue('potential-energy-average')
-                }
-            }
+            uid: this.generateUID(),
+            runNumber: 0o1,
+            timestamp: new Date().toISOString(),
+            outputData: this.collectOutputData(),
+            inputData: this.collectInputData()
         };
     }
 
-    static collectSelectedData(): InputData {
+    static collectOutputData(): OutputData {
+        if(this.OutputData === undefined) {
+            alert("No output data to collect!");
+            return defaultOutputData
+        }
+        return this.OutputData;
+    }
+
+    static collectInputData(): InputData {
         return {
             ModelSetupData: this.collectCurrentModelSetupData(),
             RunDynamicsData: this.collectCurrentRunDynamicsData(),
-            ScriptData: this.ScriptData
+            ScriptData: this.scriptData
         };
     }
-
-    private static getElementValue(id: string): number {
-        const element = document.getElementById(id);
-        return element ? parseFloat(element.textContent || '0') : 0;
-    }
-
-    // private static getElementValueAsString(id: string): string {
-    //     const element = document.getElementById(id);
-    //     return element ? element.textContent || '' : '';
-    // }
 
     static collectCurrentModelSetupData(): ModelSetupData {
-        // Get select elements
-        const atomTypeSelect = document.getElementById('AtomType') as HTMLSelectElement;
-        const boundarySelect = document.getElementById('Boundary') as HTMLSelectElement;
-        const potentialModelSelect = document.getElementById('PotentialModel') as HTMLSelectElement;
-
-        // Get number inputs
-        const numAtomsInput = document.getElementById('AtomCount') as HTMLInputElement;
-        const atomicMassInput = document.getElementById('AtomicMass') as HTMLInputElement;
-
-        // Optional potential parameters
-        const sigmaInput = document.getElementById('sigma') as HTMLInputElement;
-        const epsilonInput = document.getElementById('epsilon') as HTMLInputElement;
-
-        // Build the ModelSetupData object
-        const modelSetupData: ModelSetupData = {
-            atomType: atomTypeSelect?.value as atomType || 'He',
-            boundary: boundarySelect?.value as boundary || 'Fixed Walls',
-            potentialModel: potentialModelSelect?.value as potentialModel || 'No Potential',
-            numAtoms: parseInt(numAtomsInput?.value || '0'),
-            atomicMass: parseFloat(atomicMassInput?.value || '0'),
-        };
-
-        // Only add potential parameters if they exist
-        if (sigmaInput && epsilonInput) {
-            modelSetupData.potentialParams = {
-                sigma: parseFloat(sigmaInput.value),
-                epsilon: parseFloat(epsilonInput.value)
-            };
+        this.modelSetupData = {
+            atomType: this.modelSetupData.atomType,
+            boundary: this.modelSetupData.boundary,
+            potentialModel: this.modelSetupData.potentialModel,
+            numAtoms: this.modelSetupData.numAtoms,
+            atomicMass: this.modelSetupData.atomicMass,
+            potentialParams: this.modelSetupData.potentialParams
         }
-
-        return modelSetupData;
+        return this.modelSetupData;
     }
 
     static collectCurrentRunDynamicsData(): RunDynamicsData {
-        const simulationTypeSelect = document.getElementById('SimulationType') as HTMLSelectElement;
-        const temperatureInput = document.getElementById('Temperature') as HTMLInputElement;
-        const volumeInput = document.getElementById('Volume') as HTMLInputElement;
-        const timeStepInput = document.getElementById('TimeStep') as HTMLInputElement;
-        const stepCountInput = document.getElementById('NumberOfSteps') as HTMLInputElement;
-        const intervalInput = document.getElementById('UpdateInterval') as HTMLInputElement;
-
-        return {
-            simulationType: simulationTypeSelect?.value as simulationType || 'Const-PT',
-            initialTemperature: parseFloat(temperatureInput?.value || '0'),
-            initialVolume: parseFloat(volumeInput?.value || '0'),
-            timeStep: parseFloat(timeStepInput?.value || '0'),
-            stepCount: parseInt(stepCountInput?.value || '0'),
-            interval: parseFloat(intervalInput?.value || '0')
-        };
-    }
-
-    /**
-     * Gets the current simulation run from the UI. By default, it will save the run to the database.
-     */
-    static async getCurrentSimulationRun(outputData: OutputData, inputData: InputData, saveToDB: boolean = true): Promise<SimulationRun> {
-        const run: SimulationRun = {
-            uid: (Date.now()*17),
-            runNumber: 0o1,
-            timestamp: new Date().toISOString(),
-            outputData,
-            inputData
-        };
-        if(saveToDB) {
-            await dbManager.addOutput(run);
+        this.runDynamicsData = {
+            simulationType: this.runDynamicsData.simulationType,
+            initialTemperature: this.runDynamicsData.initialTemperature,
+            initialVolume: this.runDynamicsData.initialVolume,
+            timeStep: this.runDynamicsData.timeStep,
+            stepCount: this.runDynamicsData.stepCount,
+            interval: this.runDynamicsData.interval
         }
-        return run;
+        return this.runDynamicsData;
     }
 
-    /**
-     * Exports the simulation data to a CSV string.
-     */
     static exportSimulationData(data: SimulationRun[]): string {
         console.log(data);
         const headers = [
@@ -220,7 +180,7 @@ export class DataManager {
             'Avg Kinetic Energy (J/mol)',
             'Sample Potential Energy (J/mol)',
             'Avg Potential Energy (J/mol)',
-        ].join(','); 
+        ].join(',');
 
         const rows = data.map(run => {
             return [
@@ -250,8 +210,7 @@ export class DataManager {
                 run.outputData.energy.potential.average
             ].join(',');
         });
-        
-        console.log(rows);
+       
         return [headers, ...rows].join('\n');
     }
 }

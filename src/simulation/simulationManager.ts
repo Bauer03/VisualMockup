@@ -1,6 +1,11 @@
 import { Scene3D } from './scene';
 import { DataManager } from '../util/dataManager';
-import { InputData } from '../types/types';
+import {
+    InputData,
+    ModelSetupData,
+    RunDynamicsData,
+    ScriptData,
+ } from '../types/types';
 
 let curScene: Scene3D | null = null;
 export function getCurScene() {
@@ -24,7 +29,7 @@ export class SimulationManager {
         if (this.isBuilt) {
             this.destroySubstance();
         } else {
-            let data = DataManager.collectSelectedData();
+            let data = DataManager.collectInputData();
             await this.buildSubstance(data);
         }
     }

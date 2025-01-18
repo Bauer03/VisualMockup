@@ -1,3 +1,5 @@
+import { DataManager } from '../util/dataManager';
+
 export const createRunDynamicsContent = (): HTMLElement => {
     const content = document.createElement('div');
     content.className = 'flex px-3 justify-between';
@@ -46,5 +48,63 @@ export const createRunDynamicsContent = (): HTMLElement => {
             </div>
         </div>
     `;
+
+    // all the code below updates dataManager's runDynamicsData on change, which is then fetched when simulation is built
+
+    let simulationType = content.querySelector("#SimulationType") as HTMLSelectElement;
+    let temperature = content.querySelector("#Temperature") as HTMLInputElement;
+    let volume = content.querySelector("#Volume") as HTMLInputElement;
+    let timeStep = content.querySelector("#TimeStep") as HTMLInputElement;
+    let stepCount = content.querySelector("#NumberOfSteps") as HTMLInputElement;
+    let interval = content.querySelector("#UpdateInterval") as HTMLInputElement;
+
+    simulationType.addEventListener("change", (event) => {
+        const simulationType = (event.target as HTMLSelectElement).value;
+        if(simulationType !== "ConstVT" && simulationType !== "ConstPT") {
+            return;
+        }
+        DataManager.runDynamicsData.simulationType = simulationType;
+    });
+
+    temperature.addEventListener("change", (event) => {
+        const temperature = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(temperature)) {
+            return;
+        }
+        DataManager.runDynamicsData.initialTemperature = temperature;
+    });
+
+    volume.addEventListener("change", (event) => {
+        const volume = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(volume)) {
+            return;
+        }
+        DataManager.runDynamicsData.initialVolume = volume;
+    });
+
+    timeStep.addEventListener("change", (event) => {
+        const timeStep = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(timeStep)) {
+            return;
+        }
+        DataManager.runDynamicsData.timeStep = timeStep;
+    });
+
+    stepCount.addEventListener("change", (event) => {
+        const stepCount = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(stepCount)) {
+            return;
+        }
+        DataManager.runDynamicsData.stepCount = stepCount;
+    });
+
+    interval.addEventListener("change", (event) => {
+        const interval = parseFloat((event.target as HTMLInputElement).value);
+        if(isNaN(interval)) {
+            return;
+        }
+        DataManager.runDynamicsData.interval = interval;
+    });
+
     return content;
 };
