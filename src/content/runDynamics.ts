@@ -59,51 +59,81 @@ export const createRunDynamicsContent = (): HTMLElement => {
     let interval = content.querySelector("#UpdateInterval") as HTMLInputElement;
 
     simulationType.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const simulationType = (event.target as HTMLSelectElement).value;
         if(simulationType !== "ConstVT" && simulationType !== "ConstPT") {
             return;
         }
         DataManager.runDynamicsData.simulationType = simulationType;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateSimulationType(simulationType);
+        }
     });
 
     temperature.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const temperature = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(temperature)) {
             return;
         }
         DataManager.runDynamicsData.initialTemperature = temperature;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateInitialTemperature(temperature);
+        }
     });
 
     volume.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const volume = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(volume)) {
             return;
         }
         DataManager.runDynamicsData.initialVolume = volume;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateInitialVolume(volume);
+        }
     });
 
     timeStep.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const timeStep = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(timeStep)) {
             return;
         }
         DataManager.runDynamicsData.timeStep = timeStep;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateTimeStep(timeStep);
+        }
     });
 
     stepCount.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const stepCount = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(stepCount)) {
             return;
         }
         DataManager.runDynamicsData.stepCount = stepCount;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateStepCount(stepCount);
+        }
     });
 
     interval.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const interval = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(interval)) {
             return;
         }
         DataManager.runDynamicsData.interval = interval;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateInterval(interval);
+        }
     });
 
     return content;

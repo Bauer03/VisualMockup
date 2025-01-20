@@ -800,6 +800,10 @@ input::-webkit-outer-spin-button,
   height: 120px;
 }
 
+.h-\[400px\] {
+  height: 400px;
+}
+
 .h-\[590px\] {
   height: 590px;
 }

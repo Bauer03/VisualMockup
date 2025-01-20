@@ -1,14 +1,13 @@
 import { createPotentialParameters } from './potentialParameters';
 import { DataManager } from '../util/dataManager';
+import { SimulationManager } from '../simulation/simulationManager';
 
 export const createModelSetupContent = (): HTMLElement => {
     const content = document.createElement('div');
     content.className = 'flex flex-col px-3';
     
-    // Create the form content
     const formContent = document.createElement('div');
     formContent.className = 'flex flex-col gap-4';
-    // Only showing the main HTML template with updated styles - rest of code remains the same
     formContent.innerHTML = `
     <div class="flex justify-between gap-8">
         <fieldset class="flex flex-col gap-2">
@@ -67,21 +66,27 @@ export const createModelSetupContent = (): HTMLElement => {
     `;
 
     // all the code below updates dataManager's modelSetupData on change, which is then fetched when simulation is built
-    
+
     let atomCount = formContent.querySelector("#AtomCount") as HTMLInputElement;
     let atomType = formContent.querySelector("#AtomType") as HTMLSelectElement;
     let atomicMass = formContent.querySelector("#AtomicMass") as HTMLInputElement;
     let boundarySelector = formContent.querySelector("#Boundary") as HTMLSelectElement;
 
     atomCount.addEventListener("change", (event) => {
+        DataManager.modelSetupModified = true;
         const atomCount = parseInt((event.target as HTMLInputElement).value);
         if(isNaN(atomCount)) {
             return;
         }
         DataManager.modelSetupData.numAtoms = atomCount;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateAtomCount(atomCount);
+        }
     });
 
     atomType.addEventListener("change", (event) => {
+        DataManager.modelSetupModified = true;
         const atomType = (event.target as HTMLSelectElement).value;
         if(atomType !== "He" && atomType !== "Ne" && atomType !== "Ar" && atomType !== "Kr" && atomType !== "Xe" && atomType !== "User") {
             return;
@@ -114,26 +119,42 @@ export const createModelSetupContent = (): HTMLElement => {
                 DataManager.modelSetupData.atomicMass = 0;
                 break;
         }
+
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateAtomType(atomType);
+        }
     });
 
     atomicMass.addEventListener("change", (event) => {
+        DataManager.modelSetupModified = true;
         const atomicMass = parseFloat((event.target as HTMLInputElement).value);
         if(isNaN(atomicMass)) {
             return;
         }
         DataManager.modelSetupData.atomicMass = atomicMass;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateAtomicMass(atomicMass);
+        }
     });
 
     boundarySelector.addEventListener("change", (event) => {
+        DataManager.modelSetupModified = true;
         const boundary = (event.target as HTMLSelectElement).value;
         if(boundary !== "Fixed Walls" && boundary !== "Periodic") {
             return;
         }
         DataManager.modelSetupData.boundary = boundary;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateBoundary(boundary);
+        }
     });
     
     let pModelDropdown = formContent.querySelector("#PotentialModel") as HTMLSelectElement;
     pModelDropdown.onchange = (event) => {
+        DataManager.modelSetupModified = true;
         const potentialModel = (event.target as HTMLSelectElement).value;
         if(potentialModel !== "LennardJones" && potentialModel !== "NoPotential" && potentialModel !== "SoftSphere") {
             return;
@@ -148,6 +169,10 @@ export const createModelSetupContent = (): HTMLElement => {
             document.getElementById('model-setup-inputs')?.appendChild(createPotentialParameters(potentialModel));    
         }
         DataManager.modelSetupData.potentialModel = potentialModel;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updatePotentialModel(potentialModel);
+        }
     };
 
     content.appendChild(formContent);

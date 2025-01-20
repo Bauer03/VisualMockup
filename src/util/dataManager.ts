@@ -6,6 +6,7 @@ import {
     OutputData,
     SimulationRun,
 } from '../types/types';
+import { SimulationManager } from '../simulation/simulationManager';
 
 const defaultModelData: ModelSetupData = {
     atomType: 'He',
@@ -45,12 +46,19 @@ const defaultOutputData: OutputData = {
 
 export class DataManager {
     private static counter = 0;
-    static simulationRun: SimulationRun;
-    static InputData: InputData;
-    static OutputData: OutputData;
     static modelSetupData: ModelSetupData = defaultModelData;
     static runDynamicsData: RunDynamicsData = defaultRunDynamicsData;
     static scriptData: ScriptData = defaultScriptData;
+    static modelSetupModified = false;
+    static runDynamicsModified = false;
+    static scriptModified = false;
+    static inputData = {
+        ModelSetupData: defaultModelData,
+        RunDynamicsData: defaultRunDynamicsData,
+        ScriptData: defaultScriptData
+    };
+    static outputData: OutputData = defaultOutputData; // ... i'll figure this out later don't as
+    static simulationManager: SimulationManager | null = null;
 
     /**
      * Generates a unique ID combining timestamp and counter
@@ -114,11 +122,11 @@ export class DataManager {
     }
 
     static collectOutputData(): OutputData {
-        if(this.OutputData === undefined) {
+        if(this.outputData === undefined) {
             alert("No output data to collect!");
             return defaultOutputData
         }
-        return this.OutputData;
+        return this.outputData;
     }
 
     static collectInputData(): InputData {

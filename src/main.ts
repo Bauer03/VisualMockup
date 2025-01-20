@@ -3,10 +3,11 @@ import { getTopMenuTabs, getBottomMenuTabs } from './tabs/tabConfigurations';
 import { setupThemeToggle } from './theme/themeToggle';
 import { buildSubstanceSection } from './content/buildSubstance';
 import { SimulationManager } from './simulation/simulationManager';
-import { setupUI } from './ui/setup';
+import { setupUI } from './util/buttonsetup';
 import { createThemeButton } from './content/themeButton';
 import { createLeftSideBody } from './content/menuLeft';
 import { createRightSideBody } from './content/menuRight';
+import { DataManager } from './util/dataManager';
 
 // generating the user interface
 async function initializeUI() {
@@ -48,6 +49,6 @@ function initializeSimulation() {
         return;
     }
     
-    const simulation = new SimulationManager(canvas);
-    setupUI(simulation);
+    DataManager.simulationManager = new SimulationManager(canvas, DataManager.inputData, DataManager.outputData);
+    setupUI(DataManager.simulationManager);
 }

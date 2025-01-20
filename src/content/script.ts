@@ -47,11 +47,16 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
 
     // update the runCount input when the number of runs changes
     runCount.addEventListener("change", (event) => {
+        DataManager.runDynamicsModified = true;
         const runCount = parseInt((event.target as HTMLInputElement).value);
         if(isNaN(runCount)) {
             return;
         }
         DataManager.runDynamicsData.stepCount = runCount;
+        if(DataManager.simulationManager !== null) {
+            let t = DataManager.simulationManager;
+            t.updateRunCount(runCount);
+        }
     });
 
     content.appendChild(runCount);

@@ -1,13 +1,12 @@
 import { SimulationManager } from '../simulation/simulationManager';
-import { DataManager } from '../util/dataManager';
-import { wait } from '../util/wait';
+import { DataManager } from './dataManager';
 
 export function setupUI(simulation: SimulationManager) {
     const buildButton = document.getElementById('build-substance-button') as HTMLButtonElement;
     const runButton = document.getElementById('run-simulation-button') as HTMLButtonElement;
 
     if (!buildButton || !runButton) {
-        console.error('Simulation button(s?) not found');
+        console.error('Simulation button(s) not found');
         return;
     }
 
@@ -17,7 +16,6 @@ export function setupUI(simulation: SimulationManager) {
             // todo: build substance using selected data
             await simulation.toggleBuild();
             updateButtons(buildButton, runButton, simulation);
-            await wait(200);
         } catch (e) {
             console.error("Error toggling substance:", e);
         }

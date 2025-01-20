@@ -3,7 +3,7 @@ import { createModelSetupContent } from '../content/modelSetup';
 import { createOutputContent } from '../content/output';
 import { createNotebookContent } from '../content/notebook';
 import { createRunDynamicsContent } from '../content/runDynamics';
-import { createCommandScriptsContent } from '../content/commandScripts';
+import { createCommandScriptsContent } from '../content/script';
 
 export async function getTopMenuTabs(): Promise<Tab[]> {
     const commandScriptsContent = await createCommandScriptsContent();

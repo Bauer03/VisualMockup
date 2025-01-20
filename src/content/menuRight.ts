@@ -3,17 +3,17 @@ export const createRightSideBody = (): HTMLElement => {
     container.className = 'flex flex-col gap-4 w-[400px]';
     container.id = 'right-side-container';
 
-    const contInner = document.createElement('div');
-    contInner.className = 'rounded';
+    const canvasContainer = document.createElement('div');
+    canvasContainer.className = 'w-[400px] h-[400px] bg-gray-100 dark:bg-gray-700 rounded shadow';
 
     const canvas = document.createElement('canvas');
-    canvas.className = 'class="w-full h-full bg-gray-100 dark:bg-gray-700 rounded shadow';
     canvas.id = 'canvas';
     canvas.width = 400;
     canvas.height = 400;
-
-    contInner.appendChild(canvas);
-    container.appendChild(contInner);
+    canvas.className = 'w-full h-full';
+    
+    canvasContainer.appendChild(canvas);
+    container.appendChild(canvasContainer);
 
     return container;
-};
+}
