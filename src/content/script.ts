@@ -25,6 +25,9 @@ export const createCommandScriptsContent = async (): Promise<HTMLElement> => {
     runButton.onclick = async (e) => {
         e.preventDefault();
         const count = parseInt((document.getElementById('runCount') as HTMLInputElement).value);
+        if(count > 500 || isNaN(count)) { // can't go > 500 runs at once (probably could but...), and can't be NaN 
+            return;
+        }
         runButton.disabled = true;
         runButton.textContent = 'Running...';
         progressDiv.classList.remove('hidden');
